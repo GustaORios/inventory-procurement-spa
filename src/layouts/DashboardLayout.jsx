@@ -6,7 +6,7 @@ export default function DashboardLayout() {
     <div className="flex">
       <Sidebar />
       <main className="flex-1 p-6">
-        <Outlet /> {/* Aqui é onde as rotas vão aparecer */}
+        <Outlet />
       </main>
     </div>
   );
