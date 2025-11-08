@@ -1,30 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-// Dados de exemplo para começar
-const INITIAL_PRODUCTS = [
-  { 
-    id: 'MON-24-GAM', 
-    name: 'Monitor Gamer 24"', 
-    sku: 'MON-24-GAM', 
-    category: 'Monitores', 
-    description: 'Um monitor gamer com alta taxa de atualização.', 
-    supplier: 'TechImports', 
-    price: 1200.50, 
-    inStock: 15 
-  },
-  { 
-    id: 'TEC-MEC-01', 
-    name: 'Teclado Mecânico RGB', 
-    sku: 'TEC-MEC-01', 
-    category: 'Periféricos', 
-    description: 'Teclado com switches blue e iluminação RGB.', 
-    supplier: 'GamerGear', 
-    price: 350.00, 
-    inStock: 30 
-  },
-];
-// Este componente substitui seu 'TableCompo' com estilo Tailwind
 function InventoryTable({ products }) {
   return (
     <div className="bg-card shadow-lg rounded-lg overflow-hidden">
@@ -53,23 +29,27 @@ function InventoryTable({ products }) {
                 <td className="px-6 py-4 font-medium text-white">{product.name}</td>
                 <td className="px-6 py-4 text-gray-300">{product.category}</td>
                 <td className="px-6 py-4 text-gray-300">
-                  {/* Formata o preço para R$ ou $ */}
-                  {product.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                  {typeof product.price === 'number' 
+                    ? product.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+                    : product.price
+                  }
                 </td>
                 <td className="px-6 py-4 text-gray-300">{product.inStock}</td>
                 <td className="px-6 py-4">
-                  <div className="flex gap-4">
+                  <div className="flex gap-4 text-sm">
                     <Link
                       to={`/inventory/edit/${product.sku}`}
                       className="text-blue-400 hover:text-blue-300"
                       title="Edit"
                     >
+                      **Edit**
                     </Link>
                     <button
                       onClick={() => alert('Função Deletar não implementada')}
                       className="text-red-500 hover:text-red-400"
                       title="Delete"
                     >
+                      **Delete**
                     </button>
                   </div>
                 </td>
@@ -82,8 +62,7 @@ function InventoryTable({ products }) {
   );
 }
 
-// Componente principal da página de Inventário
-export default function Inventory() {
+export default function Inventory({ products }) {
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
@@ -95,11 +74,11 @@ export default function Inventory() {
           to="/inventory/add"
           className="flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-white font-semibold hover:bg-opacity-90 transition-colors"
         >
-          Add Product
+          **Add Product**
         </Link>
       </div>
 
-      <InventoryTable products={INITIAL_PRODUCTS} />
+      <InventoryTable products={products} />
     </div>
   );
 }

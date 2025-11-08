@@ -1,22 +1,27 @@
 import React from 'react';
-import ProductForm from '../components/ProductForm';
+import ProductForm from '../components/ProductForm'; // Ajuste o caminho se necessário
 
+// Exporta e declara o componente APENAS UMA VEZ
 export default function AddProduct({ onAdd }) {
   
-  // A função 'onSave' aqui será a função 'onAdd' vinda do App.jsx
+  // Esta função irá pre-processar os dados do formulário
+  // e chamar o onAdd (função de atualização no App.jsx)
   const handleSave = (formData) => {
-    // Converte preço e estoque para números antes de salvar
+    // 💡 IMPORTANTE: Converte preço e estoque para números antes de salvar
     const newProduct = {
       ...formData,
-      price: parseFloat(formData.price),
-      inStock: parseInt(formData.inStock, 10),
+      price: parseFloat(formData.price || 0), // Use 0 se estiver vazio
+      inStock: parseInt(formData.inStock || 0, 10), // Use 0 se estiver vazio
     };
+    
+    // Chama a função onAdd (vindo do App.jsx) com o novo produto formatado
     onAdd(newProduct);
   };
 
   return (
     <ProductForm 
-      title="Add Product"
+      title="Add New Product"
+      // Passa a função handleSave (com a conversão de tipos) para o ProductForm
       onSave={handleSave}
     />
   );
