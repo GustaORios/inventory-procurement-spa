@@ -4,12 +4,11 @@ import { useNavigate } from 'react-router-dom';
 export default function ProductForm({ title, initialData, onSave }) {
   const navigate = useNavigate();
   
-  // Estado padrão para um novo produto
   const defaultState = {
     name: '',
     sku: '',
     category: '',
-    description: '', // Placeholder do print
+    description: 'A high-definition 24-inch monitor with vibrant colors and a sleek, modern design.\nPerfect for both professional and gaming setups.', 
     supplier: '',
     price: '',
     inStock: '',
@@ -18,7 +17,6 @@ export default function ProductForm({ title, initialData, onSave }) {
   const [formData, setFormData] = useState(initialData || defaultState);
   const [errors, setErrors] = useState({});
 
-  // Se 'initialData' (para edição) for fornecido, atualiza o formulário
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
@@ -29,7 +27,6 @@ export default function ProductForm({ title, initialData, onSave }) {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Limpa o erro do campo ao digitar
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: null }));
     }
@@ -39,20 +36,18 @@ export default function ProductForm({ title, initialData, onSave }) {
     let newErrors = {};
     if (!formData.name.trim()) newErrors.name = "This field is required";
     if (!formData.sku.trim()) newErrors.sku = "This field is required";
-    // Adicione mais validações aqui se precisar
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Retorna true se não houver erros
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      onSave(formData); // Chama a função onSave (add ou edit)
-      navigate('/inventory'); // Redireciona para o inventário
+      onSave(formData);
+      navigate('/inventory');
     }
   };
 
-  // Helper para classes de input com erro
   const inputErrorClass = (fieldName) => 
     errors[fieldName] ? 'border-red-500' : 'border-gray-600';
 
@@ -84,7 +79,8 @@ export default function ProductForm({ title, initialData, onSave }) {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className={`w-full bg-input-bg border ${inputErrorClass('name')} rounded-md p-2 text-white placeholder-gray-400 focus:ring-accent focus:border-accent`}
+                // Adicionado autofill aqui
+                className={`w-full bg-input-bg border ${inputErrorClass('name')} rounded-md p-2 text-black placeholder-gray-400 focus:ring-accent focus:border-accent autofill:text-gray-900`}
               />
               {errors.name && <span className="text-xs text-red-500 mt-1">{errors.name}</span>}
             </div>
@@ -100,9 +96,11 @@ export default function ProductForm({ title, initialData, onSave }) {
                 rows="6"
                 value={formData.description}
                 onChange={handleChange}
-                className="w-full bg-input-bg border border-gray-600 rounded-md p-2 text-white placeholder-gray-400 focus:ring-accent focus:border-accent"
+                spellCheck="false"
+                // CORREÇÃO: Adicionado autofill aqui também
+                className="w-full bg-input-bg border border-gray-600 rounded-md p-2 text-black placeholder-gray-400 focus:ring-accent focus:border-accent autofill:text-gray-900"
               ></textarea>
-              <p className="text-xs text-gray-400 mt-1">Provide a clear and concise description for the product.</p>
+              
             </div>
           </div>
 
@@ -119,16 +117,16 @@ export default function ProductForm({ title, initialData, onSave }) {
                 name="sku"
                 value={formData.sku}
                 onChange={handleChange}
-                // Desabilita a edição do SKU se for um produto existente
                 disabled={!!initialData} 
-                className={`w-full bg-input-bg border ${inputErrorClass('sku')} rounded-md p-2 text-white placeholder-gray-400 focus:ring-accent focus:border-accent ${initialData ? 'opacity-70 cursor-not-allowed' : ''}`}
+                // Adicionado autofill aqui
+                className={`w-full bg-input-bg border ${inputErrorClass('sku')} rounded-md p-2 text-black placeholder-gray-400 focus:ring-accent focus:border-accent ${initialData ? 'opacity-70 cursor-not-allowed' : ''} autofill:text-gray-900`}
               />
               {errors.sku && <span className="text-xs text-red-500 mt-1">{errors.sku}</span>}
             </div>
 
             {/* Category */}
             <div>
-              <label htmlFor="category" className="block text-sm font-medium text-gray-300 mb-1">
+              <label htmlFor="category" className="block text-sm font-medium text-bl-300 mb-1">
                 Category
               </label>
               <select
@@ -136,7 +134,7 @@ export default function ProductForm({ title, initialData, onSave }) {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full bg-input-bg border border-gray-600 rounded-md p-2 text-white focus:ring-accent focus:border-accent"
+                className="w-full bg-input-bg border border-gray-600 rounded-md p-2 text-black focus:ring-accent focus:border-accent"
               >
                 <option value="">Select a category</option>
                 <option value="Monitores">Monitores</option>
@@ -155,7 +153,7 @@ export default function ProductForm({ title, initialData, onSave }) {
                 name="supplier"
                 value={formData.supplier}
                 onChange={handleChange}
-                className="w-full bg-input-bg border border-gray-600 rounded-md p-2 text-white focus:ring-accent focus:border-accent"
+                className="w-full bg-input-bg border border-gray-600 rounded-md p-2 text-black focus:ring-accent focus:border-accent"
               >
                 <option value="">Select a supplier</option>
                 <option value="TechImports">TechImports</option>
@@ -179,7 +177,8 @@ export default function ProductForm({ title, initialData, onSave }) {
                     name="price"
                     value={formData.price}
                     onChange={handleChange}
-                    className="w-full bg-input-bg border border-gray-600 rounded-md p-2 pl-7 text-white placeholder-gray-400 focus:ring-accent focus:border-accent"
+                    // Adicionado autofill aqui
+                    className="w-full bg-input-bg border border-gray-600 rounded-md p-2 pl-7 text-black placeholder-gray-400 focus:ring-accent focus:border-accent autofill:text-gray-900"
                   />
                 </div>
               </div>
@@ -194,7 +193,8 @@ export default function ProductForm({ title, initialData, onSave }) {
                   name="inStock"
                   value={formData.inStock}
                   onChange={handleChange}
-                  className="w-full bg-input-bg border border-gray-600 rounded-md p-2 text-white placeholder-gray-400 focus:ring-accent focus:border-accent"
+                  // Adicionado autofill aqui
+                  className="w-full bg-input-bg border border-gray-600 rounded-md p-2 text-black placeholder-gray-400 focus:ring-accent focus:border-accent autofill:text-gray-900"
                 />
               </div>
             </div>
@@ -205,7 +205,7 @@ export default function ProductForm({ title, initialData, onSave }) {
         <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-gray-700">
           <button
             type="button"
-            onClick={() => navigate('/inventory')} // Volta pro inventário
+            onClick={() => navigate('/inventory')}
             className="px-4 py-2 rounded-md bg-gray-600 text-white font-semibold hover:bg-gray-500 transition-colors"
           >
             Cancel
