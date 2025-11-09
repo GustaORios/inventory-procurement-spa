@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; // 👈 IMPORTAR useEffect
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Layout from './components/(OLD)Layout';
+import Layout from './components/Layout';
 import Dashboard from './layouts/DashboardLayout';
 import Inventory from './pages/Inventory';
 import AddProduct from './pages/AddProduct';
