@@ -26,6 +26,17 @@ export default function Sidebar() {
         <span className="text-white font-bold text-xl">NTG</span>
       </div>
 
+      <div className="mb-4">
+        {user ? (
+          <>
+            <p>Welcome, {user.name}!</p>
+            <button onClick={logout} className="text-red-400">Logout</button>
+          </>
+        ) : (
+          <button onClick={login} className="text-green-400">Login</button>
+        )}
+      </div>
+
       <nav className="flex flex-col gap-2">
         {menuItems.map((item) => (
           <NavLink
