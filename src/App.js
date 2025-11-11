@@ -25,28 +25,24 @@ export default function App() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
   }, [products]); 
 
-  // Função para ADICIONAR um novo produto
   const handleAddProduct = (newProduct) => {
-    // Garante que o ID seja o SKU
     const productWithId = { ...newProduct, id: newProduct.sku };
-    setProducts(prevProducts => [productWithId, ...prevProducts]); // Adiciona no início
+    setProducts(prevProducts => [productWithId, ...prevProducts]);
   };
 
-  // Função para EDITAR um produto existente
+  // FUNÇÃO DE EDIÇÃO CORRIGIDA: Recebe o objeto completo e o usa para mapear
   const handleEditProduct = (updatedProduct) => {
     setProducts(prevProducts =>
       prevProducts.map(p => (p.sku === updatedProduct.sku ? updatedProduct : p))
     );
   };
   
-  // NOVO: Função para DELETAR um produto
   const handleDeleteProduct = (skuToDelete) => {
     setProducts(prevProducts =>
       prevProducts.filter(p => p.sku !== skuToDelete)
     );
   };
   
-  // Função para ENCONTRAR um produto pelo SKU
   const getProductBySku = (sku) => {
     return products.find(p => p.sku === sku);
   };
@@ -55,10 +51,8 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Navigate to="/dashboard" replace />} /> 
-        
         <Route path="dashboard" element={<Dashboard />} />
         
-        {/* Passa a lista de produtos E a função de deletar */}
         <Route
           path="inventory"
           element={
@@ -69,13 +63,11 @@ export default function App() {
           }
         />
         
-        {/* Passa a função de adicionar */}
         <Route
           path="inventory/add"
           element={<AddProduct onAdd={handleAddProduct} />}
         />
         
-        {/* Passa as funções de editar e buscar */}
         <Route
           path="inventory/edit/:sku"
           element={
@@ -86,7 +78,6 @@ export default function App() {
           }
         />
         <Route path="suppliers" element={<Suppliers />} />
-
         <Route path="*" element={<div>Página não encontrada</div>} />
       </Route>
     </Routes>
