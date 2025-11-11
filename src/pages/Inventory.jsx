@@ -112,7 +112,7 @@ function InventoryTable({ products }) {
                                             title="Edit"
                                             className="text-gray-400 hover:text-blue-400 transition-colors"
                                         >
-                                            Editar
+                                            Edit
                                         </Link>
                                         
                                         {/* Botão DELETAR */}
@@ -121,7 +121,7 @@ function InventoryTable({ products }) {
                                             title="Delete"
                                             className="text-gray-400 hover:text-red-500 transition-colors"
                                         >
-                                            Deletar
+                                            Delet
                                         </button>
                                     </div>
                                 </td>
