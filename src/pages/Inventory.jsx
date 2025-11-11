@@ -121,7 +121,7 @@ function InventoryTable({ products }) {
                                             title="Delete"
                                             className="text-gray-400 hover:text-red-500 transition-colors"
                                         >
-                                            Delet
+                                            Delete
                                         </button>
                                     </div>
                                 </td>
