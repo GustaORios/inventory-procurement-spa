@@ -30,7 +30,6 @@ export default function App() {
     setProducts(prevProducts => [productWithId, ...prevProducts]);
   };
 
-  // FUNÇÃO DE EDIÇÃO CORRIGIDA: Recebe o objeto completo e o usa para mapear
   const handleEditProduct = (updatedProduct) => {
     setProducts(prevProducts =>
       prevProducts.map(p => (p.sku === updatedProduct.sku ? updatedProduct : p))
