@@ -6,7 +6,7 @@ import ProductForm from '../components/ProductForm';
 export default function EditProduct({ onEdit, getProduct }) {
     
     
-    const { sku } = useParams();
+    const { productId } = useParams();
     const navigate = useNavigate();
     
     
@@ -14,16 +14,16 @@ export default function EditProduct({ onEdit, getProduct }) {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (sku) {
+        if (productId) {
             
-            const product = getProduct(sku);
-            
+            const product = getProduct(productId);
+
             if (product) {
                 
                 setProductData(product);
             } else {
                 
-                console.error(`Product with SKU: ${sku} not found.`);
+                console.error(`Product with productId: ${productId} not found.`);
                 navigate('/inventory'); 
             }
             setIsLoading(false);
@@ -31,7 +31,7 @@ export default function EditProduct({ onEdit, getProduct }) {
             setIsLoading(false);
             navigate('/inventory');
         }
-    }, [sku, getProduct, navigate]); 
+    }, [productId, getProduct, navigate]); 
 
     if (isLoading) {
         return <div className="text-white text-center py-20">Carregando dados do produto...</div>;

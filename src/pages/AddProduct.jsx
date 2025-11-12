@@ -11,7 +11,6 @@ export default function AddProduct({ onAdd }) {
       price: parseFloat(formData.price || 0), 
       inStock: parseInt(formData.inStock || 0, 10), 
     };
-    
     onAdd(newProduct);
   };
 

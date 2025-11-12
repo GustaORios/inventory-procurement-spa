@@ -32,21 +32,21 @@ function ConfirmationModal({ isOpen, onClose, onConfirm, productName }) {
     );
 }
 
-function InventoryTable({ products, selectedSkus, setSelectedSkus, openDeleteModal }) {
+function InventoryTable({ products, selectedProductIds, setselectedProductIds, openDeleteModal }) {
     
-    const handleSelect = (sku) => {
-        setSelectedSkus(prev => 
-            prev.includes(sku) 
-                ? prev.filter(s => s !== sku)
-                : [...prev, sku]
+    const handleSelect = (productId) => {
+        setselectedProductIds(prev => 
+            prev.includes(productId) 
+                ? prev.filter(s => s !== productId)
+                : [...prev, productId]
         );
     };
     
     const handleSelectAll = () => {
-        if (selectedSkus.length === products.length) {
-            setSelectedSkus([]);
+        if (selectedProductIds.length === products.length) {
+            setselectedProductIds([]);
         } else {
-            setSelectedSkus(products.map(p => p.sku));
+            setselectedProductIds(products.map(p => p.productId));
         }
     };
     
@@ -78,7 +78,7 @@ function InventoryTable({ products, selectedSkus, setSelectedSkus, openDeleteMod
                         <th scope="col" className="px-3 py-3 w-10">
                             <input 
                                 type="checkbox"
-                                checked={selectedSkus.length === products.length && products.length > 0}
+                                checked={selectedProductIds.length === products.length && products.length > 0}
                                 onChange={handleSelectAll}
                                 className="h-4 w-4 text-teal-500 border-gray-600 rounded bg-gray-700 cursor-pointer focus:ring-teal-500"
                             />
@@ -105,12 +105,12 @@ function InventoryTable({ products, selectedSkus, setSelectedSkus, openDeleteMod
                         </tr>
                     ) : (
                         products.map((product) => (
-                            <tr key={product.sku} className="hover:bg-gray-800 transition-colors">
+                            <tr key={product.productId} className="hover:bg-gray-800 transition-colors">
                                 
                                 <td className="px-3 py-4">
                                     <input 
                                         type="checkbox"
-                                        checked={selectedSkus.includes(product.sku)}
+                                        checked={selectedProductIds.includes(product.sku)}
                                         onChange={() => handleSelect(product.sku)}
                                         className="h-4 w-4 text-teal-500 border-gray-600 rounded bg-gray-700 cursor-pointer focus:ring-teal-500"
                                     />
@@ -133,7 +133,7 @@ function InventoryTable({ products, selectedSkus, setSelectedSkus, openDeleteMod
                                 <td className="px-6 py-4">
                                     <div className="flex gap-4 text-sm font-medium">
                                         <Link
-                                            to={`/inventory/edit/${product.sku}`}
+                                            to={`/inventory/edit/${product.productId}`}
                                             title="Edit"
                                             className="text-gray-400 hover:text-blue-400 transition-colors"
                                         >
@@ -174,7 +174,7 @@ export default function Inventory({ products, handleDeleteProduct }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
-    const [selectedSkus, setSelectedSkus] = useState([]);
+    const [selectedProductIds, setselectedProductIds] = useState([]);
     
     
     const [filterStatus, setFilterStatus] = useState(''); 
@@ -191,7 +191,7 @@ export default function Inventory({ products, handleDeleteProduct }) {
 
     const handleConfirmDelete = () => {
         if (productToDelete) {
-            handleDeleteProduct(productToDelete.sku); 
+            handleDeleteProduct(productToDelete.productId); 
             closeDeleteModal();
         }
     };
@@ -255,8 +255,8 @@ export default function Inventory({ products, handleDeleteProduct }) {
 
             <InventoryTable 
                 products={filteredProducts} 
-                selectedSkus={selectedSkus}
-                setSelectedSkus={setSelectedSkus}
+                selectedProductIds={selectedProductIds}
+                setselectedProductIds={setselectedProductIds}
                 openDeleteModal={openDeleteModal}
             />
 
