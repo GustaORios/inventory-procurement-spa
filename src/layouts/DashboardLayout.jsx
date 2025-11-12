@@ -4,7 +4,7 @@ export default function DashboardLayout() {
   return (
     <div className="flex min-h-screen bg-primary text-gray-200">
       <main className="flex-1 p-8">
-        {/* O 'Outlet' renderiza a rota filha (Dashboard, Inventory, etc.) */}
+        {}
         <Outlet /> 
       </main>
     </div>
