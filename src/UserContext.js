@@ -1,20 +1,35 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-//first creat the context
 export const UserContext = createContext();
 
-export function UserProvider({children}){
+export function UserProvider({ children }) {
     const [user, setUser] = useState(null);
+    const navigate = useNavigate();
 
-    const login = () =>{
-        setUser({name: 'Admin', role: "Admin"});
-    }
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
 
-    const logout = () =>{setUser(null)};
+    const login = (username, role) => {
+        const userData = { username, role };
+        localStorage.setItem("user", JSON.stringify(userData));
+        setUser(userData);
+        navigate("/");
+    };
 
-    return(
-        <UserContext.Provider value={{user, login,logout}}>
+    const logout = () => {
+        localStorage.removeItem("user");
+        setUser(null);
+        navigate("/login");
+    };
+
+    return (
+        <UserContext.Provider value={{ user, login, logout }}>
             {children}
         </UserContext.Provider>
-    )
+    );
 }

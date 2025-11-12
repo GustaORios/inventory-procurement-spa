@@ -1,36 +1,39 @@
 import React, { useState, useEffect } from 'react'; // 👈 IMPORTAR useEffect
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
-import Dashboard from './layouts/DashboardLayout';
+import Dashboard from './pages/DashboardLayout';
 import Inventory from './pages/Inventory';
 import AddProduct from './pages/AddProduct';
 import EditProduct from './pages/EditProduct';
 import Suppliers from './pages/SuppliersPage';
+import Login from './pages/Login';
+import ProtectedRoute from './components/ProtectedRoute';
+import RoleProtectedRoute from './components/RoleProtectedRoute';
 
 // Chave que usaremos para salvar no localStorage
 const STORAGE_KEY = 'inventory_products';
 
 // Dados de exemplo, usados SOMENTE se não houver nada no localStorage
 const INITIAL_PRODUCTS = [
-  { 
-    id: 'MON-24-GAM', 
-    name: 'Monitor Gamer 24"', 
-    sku: 'MON-24-GAM', 
-    category: 'Monitores', 
-    description: 'Um monitor gamer com alta taxa de atualização.', 
-    supplier: 'TechImports', 
-    price: 1200.50, 
-    inStock: 15 
+  {
+    id: 'MON-24-GAM',
+    name: 'Monitor Gamer 24"',
+    sku: 'MON-24-GAM',
+    category: 'Monitores',
+    description: 'Um monitor gamer com alta taxa de atualização.',
+    supplier: 'TechImports',
+    price: 1200.50,
+    inStock: 15
   },
-  { 
-    id: 'TEC-MEC-01', 
-    name: 'Teclado Mecânico RGB', 
-    sku: 'TEC-MEC-01', 
-    category: 'Periféricos', 
-    description: 'Teclado com switches blue e iluminação RGB.', 
-    supplier: 'GamerGear', 
-    price: 350.00, 
-    inStock: 30 
+  {
+    id: 'TEC-MEC-01',
+    name: 'Teclado Mecânico RGB',
+    sku: 'TEC-MEC-01',
+    category: 'Periféricos',
+    description: 'Teclado com switches blue e iluminação RGB.',
+    supplier: 'GamerGear',
+    price: 350.00,
+    inStock: 30
   },
 ];
 
@@ -47,7 +50,7 @@ const getInitialState = () => {
 
 export default function App() {
   // 1. Inicializa o estado lendo do localStorage
-  const [products, setProducts] = useState(getInitialState); 
+  const [products, setProducts] = useState(getInitialState);
 
   // 2. Sincroniza o estado com o localStorage sempre que 'products' mudar
   useEffect(() => {
@@ -68,7 +71,7 @@ export default function App() {
       prevProducts.map(p => (p.sku === sku ? { ...p, ...updatedProduct } : p))
     );
   };
-  
+
   // Função para ENCONTRAR um produto pelo SKU (necessário para a tela de edição)
   const getProductBySku = (sku) => {
     return products.find(p => p.sku === sku);
@@ -76,21 +79,28 @@ export default function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Navigate to="/dashboard" replace />} /> 
-        
+      <Route path="/login" element={<Login />} />
+
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Layout />
+          </ProtectedRoute>
+        }
+      >
         <Route path="dashboard" element={<Dashboard />} />
-        
+
         <Route
           path="inventory"
           element={<Inventory products={products} />}
         />
-        
+
         <Route
           path="inventory/add"
           element={<AddProduct onAdd={handleAddProduct} />}
         />
-        
+
         <Route
           path="inventory/edit/:sku"
           element={
@@ -100,9 +110,16 @@ export default function App() {
             />
           }
         />
-        <Route path="suppliers" element={<Suppliers />} />
 
-        <Route path="*" element={<div>Página não encontrada</div>} />
+        <Route
+          path="suppliers"
+          element={
+            <RoleProtectedRoute allowedRoles={["admin", "manager"]}>
+              <Suppliers />
+            </RoleProtectedRoute>
+          }
+        />
+        <Route path="*" element={<div>Page not found</div>} />
       </Route>
     </Routes>
   );

@@ -11,12 +11,14 @@ const menuItems = [
 ];
 
 export default function Sidebar() {
-  const { user, login, logout } = useContext(UserContext);
+  const { user, logout } = useContext(UserContext); 
   const activeClass = "bg-accent text-white font-semibold";
   const inactiveClass = "hover:bg-gray-700";
 
+  if (!user) return null;
+
   return (
-    <aside className="w-60 bg-primary flex flex-col p-4 shadow-lg">
+    <aside className="w-60 bg-primary flex flex-col p-4 shadow-lg min-h-screen">
       <div className="flex items-center gap-3 mb-8 p-2">
         <div className="w-10 h-10 bg-gray-700 border-2 border-accent rounded-full flex items-center justify-center">
           <span className="font-bold text-accent text-lg">N</span>
@@ -40,16 +42,17 @@ export default function Sidebar() {
         ))}
       </nav>
 
+      <div className="flex flex-col gap-2 border-t border-gray-700 pt-4 mt-auto">
+        <p className="text-gray-200">
+          {user.username} ({user.role})
+        </p>
 
-      <div className="flex flex-col gap-2 border-t border-gray-700 pt-4">
-        {user ? (
-          <>
-            <p>Welcome, {user.name}!</p>
-            <button onClick={logout} className={`flex items-center gap-3 px-3 py-2 rounded-md ${inactiveClass}`}>Logout</button>
-          </>
-        ) : (
-          <button onClick={login} className={`flex items-center gap-3 px-3 py-2 rounded-md ${inactiveClass}`}>Login</button>
-        )}
+        <button
+          onClick={logout}
+          className="bg-red-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-400 transition mt-2"
+        >
+          Logout
+        </button>
       </div>
     </aside>
   );
