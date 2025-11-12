@@ -1,34 +1,53 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import ProductForm from '../components/ProductForm';
 
+
 export default function EditProduct({ onEdit, getProduct }) {
-  const { sku } = useParams(); // Pega o 'sku' da URL (ex: /edit/MON-24-GAM)
-  const productToEdit = getProduct(sku);
+    
+    
+    const { productId } = useParams();
+    const navigate = useNavigate();
+    
+    
+    const [productData, setProductData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-  // A função 'onSave' aqui será a função 'onEdit' vinda do App.jsx
-  const handleSave = (formData) => {
-    const updatedProduct = {
-      ...formData,
-      price: parseFloat(formData.price),
-      inStock: parseInt(formData.inStock, 10),
-    };
-    onEdit(sku, updatedProduct);
-  };
+    useEffect(() => {
+        if (productId) {
+            
+            const product = getProduct(productId);
 
-  if (!productToEdit) {
+            if (product) {
+                
+                setProductData(product);
+            } else {
+                
+                console.error(`Product with productId: ${productId} not found.`);
+                navigate('/inventory'); 
+            }
+            setIsLoading(false);
+        } else {
+            setIsLoading(false);
+            navigate('/inventory');
+        }
+    }, [productId, getProduct, navigate]); 
+
+    if (isLoading) {
+        return <div className="text-white text-center py-20">Carregando dados do produto...</div>;
+    }
+
+    if (!productData) {
+        
+        return <div className="text-white text-center py-20">Produto não encontrado. Redirecionando...</div>;
+    }
+
+    
     return (
-      <div className="text-center text-red-500 text-lg">
-        Produto com SKU "{sku}" não encontrado.
-      </div>
+        <ProductForm 
+            title={`Edit Product: ${productData.name}`}
+            initialData={productData}
+            onSave={onEdit} 
+        />
     );
-  }
-
-  return (
-    <ProductForm 
-      title="Edit Product"
-      initialData={productToEdit}
-      onSave={handleSave}
-    />
-  );
 }
