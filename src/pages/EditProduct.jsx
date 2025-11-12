@@ -4,11 +4,8 @@ import ProductForm from '../components/ProductForm';
 
 
 export default function EditProduct({ onEdit, getProduct }) {
-    
-    
     const { productId } = useParams();
     const navigate = useNavigate();
-    
     
     const [productData, setProductData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
