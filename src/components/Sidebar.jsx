@@ -16,7 +16,7 @@ export default function Sidebar() {
   const inactiveClass = "hover:bg-gray-700";
 
   return (
-    <aside className="w-60 bg-primary flex flex-col p-4 shadow-lg">
+    <aside className="w-60 bg-primary flex flex-col p-4 shadow-lg border-r-[1px] border-r-[#374151]" >
       <div className="flex items-center gap-3 mb-8 p-2">
         <div className="w-10 h-10 bg-gray-700 border-2 border-accent rounded-full flex items-center justify-center">
           <span className="font-bold text-accent text-lg">N</span>
@@ -38,7 +38,7 @@ export default function Sidebar() {
             {item.icon} {item.name}
           </NavLink>
         ))}
-      </nav>
+      </nav>  
 
 
       <div className="flex flex-col gap-2 border-t border-gray-700 pt-4">
