@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-// 1. --- COMPONENTE MODAL DE CONFIRMAÇÃO (Sem alterações) ---
 function ConfirmationModal({ isOpen, onClose, onConfirm, productName }) {
     if (!isOpen) return null;
 
@@ -33,8 +32,6 @@ function ConfirmationModal({ isOpen, onClose, onConfirm, productName }) {
     );
 }
 
-// 2. --- COMPONENTE DA TABELA (Recebe openDeleteModal) ---
-// (Alterado para incluir Brand e Location)
 function InventoryTable({ products, selectedSkus, setSelectedSkus, openDeleteModal }) {
     
     const handleSelect = (sku) => {
@@ -72,7 +69,7 @@ function InventoryTable({ products, selectedSkus, setSelectedSkus, openDeleteMod
             </span>
         );
     };
-
+    
     return (
         <div className="bg-gray-900/50 shadow-xl rounded-xl overflow-hidden border border-gray-700">
             <table className="min-w-full text-left">
@@ -89,10 +86,10 @@ function InventoryTable({ products, selectedSkus, setSelectedSkus, openDeleteMod
                         <th scope="col" className="px-3 py-3">SKU</th>
                         <th scope="col" className="px-6 py-3">Product Name</th>
                         <th scope="col" className="px-6 py-3">Category</th>
-                        <th scope="col" className="px-6 py-3">Brand</th> {/* NOVO CAMPO */}
+                        <th scope="col" className="px-6 py-3">Brand</th>
                         <th scope="col" className="px-4 py-3 text-right">Price</th>
                         <th scope="col" className="px-4 py-3 text-center">Stock</th>
-                        <th scope="col" className="px-6 py-3">Location</th> {/* NOVO CAMPO */}
+                        <th scope="col" className="px-6 py-3">Location</th>
                         <th scope="col" className="px-6 py-3">Exp. Date</th>
                         <th scope="col" className="px-6 py-3">Status</th>      
                         <th scope="col" className="px-6 py-3">Actions</th>
@@ -102,7 +99,7 @@ function InventoryTable({ products, selectedSkus, setSelectedSkus, openDeleteMod
                 <tbody className="divide-y divide-gray-700">
                     {products.length === 0 ? (
                         <tr>
-                            <td colSpan="11" className="px-6 py-4 text-center text-gray-500"> {/* ColSpan atualizado */}
+                            <td colSpan="11" className="px-6 py-4 text-center text-gray-500">
                                 No products listed.
                             </td>
                         </tr>
@@ -121,14 +118,14 @@ function InventoryTable({ products, selectedSkus, setSelectedSkus, openDeleteMod
                                 <td className="px-3 py-4 text-gray-500 font-mono text-xs">{product.sku}</td>
                                 <td className="px-6 py-4 font-medium text-white">{product.name}</td>
                                 <td className="px-6 py-4 text-gray-300">{product.category}</td>
-                                <td className="px-6 py-4 text-gray-300">{product.brand}</td> {/* NOVO CAMPO */}
+                                <td className="px-6 py-4 text-gray-300">{product.brand}</td>
                                 <td className="px-4 py-4 text-right text-teal-400 font-mono">
                                     ${parseFloat(product.price).toFixed(2)}
                                 </td>
                                 <td className="px-4 py-4 text-center text-white font-semibold">
                                     {product.inStock}
                                 </td>
-                                <td className="px-6 py-4 text-gray-400 text-sm">{product.location}</td> {/* NOVO CAMPO */}
+                                <td className="px-6 py-4 text-gray-400 text-sm">{product.location}</td>
                                 <td className="px-6 py-4 text-gray-400 text-sm">
                                     {product.expirationDate || 'N/A'}
                                 </td>
@@ -143,7 +140,7 @@ function InventoryTable({ products, selectedSkus, setSelectedSkus, openDeleteMod
                                             Edit
                                         </Link>
                                         <button
-                                            onClick={() => openDeleteModal(product)} // Chama a função para abrir o modal
+                                            onClick={() => openDeleteModal(product)}
                                             title="Delete"
                                             className="text-gray-400 hover:text-red-500 transition-colors"
                                         >
@@ -172,15 +169,15 @@ function InventoryTable({ products, selectedSkus, setSelectedSkus, openDeleteMod
     );
 }
 
-
-// 3. --- COMPONENTE PRINCIPAL (Recebe 'products' e 'handleDeleteProduct' do App.js) ---
 export default function Inventory({ products, handleDeleteProduct }) {
-    // REMOVIDO: const [products, setProducts] = useState([...]);
     
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
     const [selectedSkus, setSelectedSkus] = useState([]);
+    
+    
+    const [filterStatus, setFilterStatus] = useState(''); 
 
     const openDeleteModal = (product) => {
         setProductToDelete(product);
@@ -192,17 +189,31 @@ export default function Inventory({ products, handleDeleteProduct }) {
         setProductToDelete(null);
     };
 
-    // ATUALIZADO: Esta função agora chama a prop do App.js
     const handleConfirmDelete = () => {
         if (productToDelete) {
-            handleDeleteProduct(productToDelete.sku); // Chama a função do App.js
+            handleDeleteProduct(productToDelete.sku); 
             closeDeleteModal();
         }
     };
     
-    const filteredProducts = products.filter(p => 
-        p.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    
+    const getProductStatus = (inStock) => {
+        const stock = parseInt(inStock, 10);
+        if (stock === 0) return 'critical';
+        if (stock <= 5 && stock > 0) return 'alert';
+        return 'ok';
+    };
+
+    
+    const filteredProducts = products.filter(p => {
+        
+        const matchesSearchTerm = p.name.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        
+        const matchesStatus = filterStatus === '' || getProductStatus(p.inStock) === filterStatus;
+
+        return matchesSearchTerm && matchesStatus;
+    });
 
     return (
         <div className="max-w-7xl mx-auto py-10">
@@ -219,17 +230,21 @@ export default function Inventory({ products, handleDeleteProduct }) {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 focus:ring-teal-500 focus:border-teal-500 w-80 shadow-inner"
                     />
+                    
+                    {}
                     <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
                         className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:ring-teal-500 focus:border-teal-500 shadow-inner"
                     >
-                        <option value="">Filter by Availability</option>
+                        {}
+                        <option value="">Filter by Availability</option> 
                         <option value="ok">OK</option>
                         <option value="alert">ALERT</option>
                         <option value="critical">CRITICAL</option>
                     </select>
                 </div>
                 
-                {/* O Link para /inventory/add funciona com a rota do App.js */}
                 <Link
                     to="/inventory/add"
                     className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50 transform hover:scale-[1.01]"
@@ -242,13 +257,13 @@ export default function Inventory({ products, handleDeleteProduct }) {
                 products={filteredProducts} 
                 selectedSkus={selectedSkus}
                 setSelectedSkus={setSelectedSkus}
-                openDeleteModal={openDeleteModal} // Passa a função para abrir o modal
+                openDeleteModal={openDeleteModal}
             />
 
             <ConfirmationModal
                 isOpen={isModalOpen}
                 onClose={closeDeleteModal}
-                onConfirm={handleConfirmDelete} // O modal chama a função de confirmação
+                onConfirm={handleConfirmDelete}
                 productName={productToDelete?.name || ''}
             />
         </div>
