@@ -40,24 +40,28 @@ export default function ProductForm({ title, initialData, onSave }) {
   const validateForm = () => {
     let newErrors = {};
     
-    if (!formData.name.trim()) newErrors.name = "O nome é obrigatório.";
-    if (!formData.sku.trim()) newErrors.sku = "O SKU é obrigatório.";
-    if (!formData.category.trim()) newErrors.category = "A categoria é obrigatória.";
-    if (!formData.brand.trim()) newErrors.brand = "A marca é obrigatória.";
+    
+    if (!formData.name.trim()) newErrors.name = "Name is required.";
+    if (!formData.sku.trim()) newErrors.sku = "SKU is required.";
+    if (!formData.category.trim()) newErrors.category = "Category is required.";
+    if (!formData.brand.trim()) newErrors.brand = "Brand is required.";
+    
     
     const priceValue = parseFloat(formData.price);
     if (!formData.price || isNaN(priceValue) || priceValue <= 0) 
-        newErrors.price = "O preço é obrigatório e deve ser maior que zero.";
+        newErrors.price = "Price is required and must be greater than zero.";
         
+    
     const stockValue = parseInt(formData.inStock);
     if (!formData.inStock || isNaN(stockValue) || stockValue < 0) 
-        newErrors.inStock = "O estoque é obrigatório e deve ser um número válido (>= 0).";
+        newErrors.inStock = "Stock is required and must be a valid number";
         
-    if (!formData.location.trim()) newErrors.location = "A localização é obrigatória.";
+    
+    if (!formData.location.trim()) newErrors.location = "Location is required.";
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
+};
 
   const handleSubmit = (e) => {
     e.preventDefault();
