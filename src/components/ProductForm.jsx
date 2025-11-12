@@ -3,16 +3,17 @@ import { useNavigate } from 'react-router-dom';
 
 export default function ProductForm({ title, initialData, onSave }) {
   const navigate = useNavigate();
-  
+
   const defaultState = {
+    productId: '',
     name: '',
     sku: '',
-    category: '', 
-    description: '', 
-    brand: '', 
+    category: '',
+    description: '',
+    brand: '',
     price: '',
     inStock: '',
-    location: '', 
+    location: '',
     expirationDate: '',
   };
 
@@ -31,7 +32,7 @@ export default function ProductForm({ title, initialData, onSave }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
+
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: null }));
     }
@@ -39,54 +40,59 @@ export default function ProductForm({ title, initialData, onSave }) {
 
   const validateForm = () => {
     let newErrors = {};
-    
-    
+
+
     if (!formData.name.trim()) newErrors.name = "Name is required.";
     if (!formData.sku.trim()) newErrors.sku = "SKU is required.";
     if (!formData.category.trim()) newErrors.category = "Category is required.";
     if (!formData.brand.trim()) newErrors.brand = "Brand is required.";
-    
-    
+
+
     const priceValue = parseFloat(formData.price);
-    if (!formData.price || isNaN(priceValue) || priceValue <= 0) 
-        newErrors.price = "Price is required and must be greater than zero.";
-        
-    
+    if (!formData.price || isNaN(priceValue) || priceValue <= 0)
+      newErrors.price = "Price is required and must be greater than zero.";
+
+
     const stockValue = parseInt(formData.inStock);
-    if (!formData.inStock || isNaN(stockValue) || stockValue < 0) 
-        newErrors.inStock = "Stock is required and must be a valid number";
-        
-    
+    if (!formData.inStock || isNaN(stockValue) || stockValue < 0)
+      newErrors.inStock = "Stock is required and must be a valid number";
+
+
     if (!formData.location.trim()) newErrors.location = "Location is required.";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-};
+  };
+
+  function generateId() {
+    return `id_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
+      if(!formData.productId) formData.productId = generateId();
       onSave(formData);
       const action = initialData ? 'updated' : 'created';
       console.log(`Product ${action} successfully:`, formData);
       navigate('/inventory');
     } else {
-        console.error("Validation failed", errors);
+      console.error("Validation failed", errors);
     }
   };
 
-  const inputErrorClass = (fieldName) => 
+  const inputErrorClass = (fieldName) =>
     errors[fieldName] ? 'border-red-500' : 'border-gray-700';
 
   const RequiredAsterisk = ({ fieldName }) => {
-      
-      const isRequired = ['name', 'sku', 'category', 'brand', 'price', 'inStock', 'location'].includes(fieldName);
-      return isRequired ? <span className="text-red-500">*</span> : null;
+
+    const isRequired = ['name', 'sku', 'category', 'brand', 'price', 'inStock', 'location'].includes(fieldName);
+    return isRequired ? <span className="text-red-500">*</span> : null;
   };
 
   return (
     <div className="max-w-5xl mx-auto py-10">
-      {}
+      { }
       <div className="mb-6">
         <span className="text-sm text-gray-400">Products / {title}</span>
         <h1 className="text-3xl font-extrabold text-white mt-1">{title}</h1>
@@ -95,16 +101,16 @@ export default function ProductForm({ title, initialData, onSave }) {
         </p>
       </div>
 
-      {}
-      <form 
-        onSubmit={handleSubmit} 
+      { }
+      <form
+        onSubmit={handleSubmit}
         className="bg-gray-900/50 p-8 rounded-xl shadow-2xl border border-gray-700"
       >
-        
-        {}
+
+        { }
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-          
-          {}
+
+          { }
           <div className="md:col-span-2">
             <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
               Product Name <RequiredAsterisk fieldName="name" />
@@ -120,9 +126,9 @@ export default function ProductForm({ title, initialData, onSave }) {
             {errors.name && <span className="text-xs text-red-500 mt-1">{errors.name}</span>}
           </div>
 
-          {}
+          { }
           <div>
-            {}
+            { }
             <label htmlFor="sku" className="block text-sm font-medium text-gray-300 mb-1">
               SKU <RequiredAsterisk fieldName="sku" />
             </label>
@@ -132,14 +138,14 @@ export default function ProductForm({ title, initialData, onSave }) {
               name="sku"
               value={formData.sku}
               onChange={handleChange}
-              disabled={!!initialData} 
+              disabled={!!initialData}
               className={`w-full bg-gray-800 border ${inputErrorClass('sku')} rounded-lg p-3 text-white placeholder-gray-500 focus:ring-teal-500 focus:border-teal-500 shadow-inner ${initialData ? 'opacity-50 cursor-not-allowed border-gray-800' : ''}`}
             />
             {errors.sku && <span className="text-xs text-red-500 mt-1">{errors.sku}</span>}
           </div>
 
           <div>
-            {}
+            { }
             <label htmlFor="category" className="block text-sm font-medium text-gray-300 mb-1">
               Category <RequiredAsterisk fieldName="category" />
             </label>
@@ -153,10 +159,10 @@ export default function ProductForm({ title, initialData, onSave }) {
             />
             {errors.category && <span className="text-xs text-red-500 mt-1">{errors.category}</span>}
           </div>
-          
-          {}
+
+          { }
           <div>
-            {}
+            { }
             <label htmlFor="price" className="block text-sm font-medium text-gray-300 mb-1">
               Price <RequiredAsterisk fieldName="price" />
             </label>
@@ -176,7 +182,7 @@ export default function ProductForm({ title, initialData, onSave }) {
           </div>
 
           <div>
-            {}
+            { }
             <label htmlFor="inStock" className="block text-sm font-medium text-gray-300 mb-1">
               In Stock <RequiredAsterisk fieldName="inStock" />
             </label>
@@ -190,10 +196,10 @@ export default function ProductForm({ title, initialData, onSave }) {
             />
             {errors.inStock && <span className="text-xs text-red-500 mt-1">{errors.inStock}</span>}
           </div>
-          
-          {}
+
+          { }
           <div>
-            {}
+            { }
             <label htmlFor="brand" className="block text-sm font-medium text-gray-300 mb-1">
               Brand <RequiredAsterisk fieldName="brand" />
             </label>
@@ -209,7 +215,7 @@ export default function ProductForm({ title, initialData, onSave }) {
           </div>
 
           <div>
-            {}
+            { }
             <label htmlFor="location" className="block text-sm font-medium text-gray-300 mb-1">
               Location <RequiredAsterisk fieldName="location" />
             </label>
@@ -224,7 +230,7 @@ export default function ProductForm({ title, initialData, onSave }) {
             {errors.location && <span className="text-xs text-red-500 mt-1">{errors.location}</span>}
           </div>
 
-          {}
+          { }
           <div>
             <label htmlFor="expirationDate" className="block text-sm font-medium text-gray-300 mb-1">
               Expiration Date
@@ -238,32 +244,32 @@ export default function ProductForm({ title, initialData, onSave }) {
               className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:ring-teal-500 focus:border-teal-500 shadow-inner"
             />
           </div>
-          
-          {}
-          <div></div> 
+
+          { }
+          <div></div>
 
         </div>
-        
-        {}
+
+        { }
         <div className="mt-6">
-            {}
-            <div className="md:col-span-2">
-              <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-1">
-                Description
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                rows="6"
-                value={formData.description}
-                onChange={handleChange}
-                spellCheck="false"
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 focus:ring-teal-500 focus:border-teal-500 shadow-inner resize-none"
-              ></textarea>
-            </div>
+          { }
+          <div className="md:col-span-2">
+            <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-1">
+              Description
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              rows="6"
+              value={formData.description}
+              onChange={handleChange}
+              spellCheck="false"
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 focus:ring-teal-500 focus:border-teal-500 shadow-inner resize-none"
+            ></textarea>
+          </div>
         </div>
 
-        {}
+        { }
         <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-gray-700">
           <button
             type="button"

@@ -29,24 +29,24 @@ export default function App() {
   }, [products]); 
 
   const handleAddProduct = (newProduct) => {
-    const productWithId = { ...newProduct, id: newProduct.sku };
+    const productWithId = { ...newProduct, id: newProduct.productId };
     setProducts(prevProducts => [productWithId, ...prevProducts]);
   };
 
   const handleEditProduct = (updatedProduct) => {
     setProducts(prevProducts =>
-      prevProducts.map(p => (p.sku === updatedProduct.sku ? updatedProduct : p))
+      prevProducts.map(p => (p.productId === updatedProduct.productId ? updatedProduct : p))
     );
   };
   
-  const handleDeleteProduct = (skuToDelete) => {
+  const handleDeleteProduct = (productIdToDelete) => {
     setProducts(prevProducts =>
-      prevProducts.filter(p => p.sku !== skuToDelete)
+      prevProducts.filter(p => p.productId !== productIdToDelete)
     );
   };
   
-  const getProductBySku = (sku) => {
-    return products.find(p => p.sku === sku);
+  const getProductBySku = (productId) => {
+    return products.find(p => p.productId === productId);
   };
 
   return (
@@ -79,7 +79,7 @@ export default function App() {
         />
 
         <Route
-          path="inventory/edit/:sku"
+          path="inventory/edit/:productId"
           element={
             <EditProduct
               onEdit={handleEditProduct}
