@@ -53,6 +53,7 @@ const getInitialState = () => {
 export default function App() {
   // 1. Inicializa o estado lendo do localStorage
   const [products, setProducts] = useState(getInitialState);
+  const [suppliers, setSuppliers] = useState([]);
 
   // 2. Sincroniza o estado com o localStorage sempre que 'products' mudar
   useEffect(() => {
@@ -66,6 +67,29 @@ export default function App() {
     const productWithId = { ...newProduct, id: newProduct.sku };
     setProducts(prevProducts => [...prevProducts, productWithId]);
   };
+
+  const handleAddSupplier = async (newSupplier) => {
+    try {
+      const res = await fetch("/suppliers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newSupplier)
+      });
+
+      if (!res.ok) throw new Error("No se pudo agregar el supplier");
+
+      const savedSupplier = await res.json(); // json-server regresa el objeto creado
+
+      // Actualizar el estado local (opcional pero recomendado)
+      setSuppliers(prev => [...prev, savedSupplier]);
+
+    } catch (err) {
+      console.error(err);
+      alert("Error agregando supplier");
+    }
+  };
+
+
 
   // Função para EDITAR um produto existente
   const handleEditProduct = (sku, updatedProduct) => {
@@ -110,7 +134,7 @@ export default function App() {
 
         <Route
           path="suppliers/add"
-          element={<AddSupplier onAdd={handleAddProduct} />}
+          element={<AddSupplier onAdd={handleAddSupplier} />}
         />
         <Route path="settings" element={<Settings />} />
 

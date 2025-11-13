@@ -44,7 +44,7 @@ export default function Settings() {
                     System Preferences
                 </p>
 
-                {/* Low Stock Alerts */}
+                {/*     Low Stock Alerts  */}
                 <div className="mb-6 flex items-center justify-between md:gap-6">
                     <label htmlFor="lowStock" className="text-sm text-gray-400 w-1/3">
                         Low Stock Alerts

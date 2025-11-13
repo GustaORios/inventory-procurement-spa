@@ -12,7 +12,7 @@ export default function SuppliersPage() {
     if (didFetch.current) return;
     didFetch.current = true;
 
-    fetch("/mock/supplier.json")
+    fetch('/suppliers')
       .then((response) => response.json())
       .then((data) => {
         setSuppliers(data);
@@ -33,9 +33,28 @@ export default function SuppliersPage() {
     const status = (sup.status || "").toLowerCase();
     const matchesStatus = !statusFilter || status === statusFilter;
 
+
+    
+    
+    
     return matchesText && matchesStatus;
   });
+  
+  ///////////////////////////////////////////////////////////prueba
+  async function handleDeleteSupplier(id) {
+    if (!confirm("¿Eliminar este supplier?")) return;
 
+    try {
+      const res = await fetch(`/suppliers/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("No se pudo eliminar");
+
+      // Actualiza estado local (optimista)
+      setSuppliers(prev => prev.filter(s => s.id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Error eliminando supplier");
+    }
+  }
   // /color status
   const renderStatus = (status) => {
     if (status === "OK") return "bg-green-600 text-white";
@@ -137,12 +156,13 @@ export default function SuppliersPage() {
                       Edit
                     </Link>
                     <button
-                      onClick={() => console.log("Delete supplier:", sup.id)}
+                      onClick={() => handleDeleteSupplier(sup.id)}
                       title="Delete"
                       className="text-gray-400 hover:text-red-500 transition-colors"
                     >
                       Delete
                     </button>
+
                   </div>
                 </td>
               </tr>

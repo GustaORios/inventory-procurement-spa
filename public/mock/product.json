@@ -1,35 +1,3 @@
 [
-  {
-    "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d25ef",
-    "description": "Organic Arabica Coffee Beans 1kg",
-    "quantity": 250,
-    "location": "Vancouver Warehouse A3",
-    "packageSize": 1,
-    "expirationDate": "2026-05-01",
-    "price": 19.99,
-    "createdAt": "2024-09-12T14:45:00Z",
-    "updatedAt": "2025-03-03T09:21:15Z"
-  },
-  {
-    "productId": "c8f2f23d-3e4c-4c2f-a9e3-1d6acb6fcbf7",
-    "description": "Premium Green Tea 500g",
-    "quantity": 150,
-    "location": "Toronto Distribution Center B1",
-    "packageSize": 0.5,
-    "expirationDate": "2026-01-10",
-    "price": 12.50,
-    "createdAt": "2024-08-01T11:32:00Z",
-    "updatedAt": "2025-02-25T18:05:45Z"
-  },
-  {
-    "productId": "e49b94cb-7853-4b47-9b18-42a735b94f65",
-    "description": "Dark Chocolate Bar 100g",
-    "quantity": 1000,
-    "location": "Calgary Storage C2",
-    "packageSize": 0.1,
-    "expirationDate": "2025-12-20",
-    "price": 2.99,
-    "createdAt": "2024-07-01T09:00:00Z",
-    "updatedAt": "2025-03-12T10:10:10Z"
-  }
+ 
 ]
