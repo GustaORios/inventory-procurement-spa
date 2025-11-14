@@ -22,7 +22,7 @@
       "category": "Snacks",
       "brand": "SweetBite",
       "price": 2.99,
-      "inStock": 1000,
+      "inStock": "700",
       "location": "Calgary Storage C2",
       "expirationDate": "2025-12-20",
       "createdAt": "2024-07-01T09:00:00Z",
@@ -34,19 +34,19 @@
       "id": "c4f8d8a1-8e9a-4f52-bf77-4c3d2e1c5a21",
       "name": "Global Trade Supplies Ltd.",
       "email": "contact@globaltrade.com",
-      "role": "client",
+      "role": "vendor",
       "status": "ACTIVE",
       "createdAt": "2024-07-15T10:23:45Z",
-      "updatedAt": "2025-11-14T07:33:23.379Z"
+      "updatedAt": "2025-11-14T19:12:31.641Z"
     },
     {
       "id": "b19cfd43-4f25-4bb8-8e1a-29b0dc8cb6c2",
       "name": "Pacific Logistics Co.",
       "email": "info@pacificlogistics.ca",
-      "role": "client",
+      "role": "vendor",
       "status": "PENDING",
       "createdAt": "2023-11-22T08:15:30Z",
-      "updatedAt": "2025-11-14T07:33:28.469Z"
+      "updatedAt": "2025-11-14T19:12:35.945Z"
     },
     {
       "id": "7a62c1e4-s1d8f-496c-9314-952b2c631b9ac",
@@ -76,26 +76,6 @@
       "status": "ACTIVE",
       "createdAt": "2025-11-13T22:49:16.690Z",
       "updatedAt": "2025-11-13T22:49:30.918Z"
-    },
-    {
-      "id": "9a641e10-df12-4bd1-8700-25f85b8c3f05",
-      "name": "ASLKDFJASFLKD",
-      "email": "ASFJASFLD@GMAIL.COM",
-      "role": "picker",
-      "notes": "",
-      "status": "INACTIVE",
-      "createdAt": "2025-11-13T22:49:38.332Z",
-      "updatedAt": "2025-11-13T22:50:08.432Z"
-    },
-    {
-      "id": "cb8b40b0-f9a9-46f7-a276-7d5dda135404",
-      "name": "ASFASDF",
-      "email": "ASDFSA@GMAIL.COM",
-      "role": "packer",
-      "notes": "",
-      "status": "PENDING",
-      "createdAt": "2025-11-13T22:50:10.591Z",
-      "updatedAt": "2025-11-13T22:50:20.875Z"
     }
   ]
 }
