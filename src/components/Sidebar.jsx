@@ -18,7 +18,7 @@ export default function Sidebar() {
   if (!user) return null;
 
   return (
-    <aside className="w-60 bg-primary flex flex-col p-4 shadow-lg min-h-screen">
+    <aside className="w-60 bg-primary flex flex-col p-4 shadow-lg border-r-[1px] border-r-[#374151]" >
       <div className="flex items-center gap-3 mb-8 p-2">
         <div className="w-10 h-10 bg-gray-700 border-2 border-accent rounded-full flex items-center justify-center">
           <span className="font-bold text-accent text-lg">N</span>
