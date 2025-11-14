@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
-import Dashboard from './pages/DashboardLayout';
 import Inventory from './pages/Inventory';
 import AddProduct from './pages/AddProduct';
 import EditProduct from './pages/EditProduct';
@@ -176,16 +175,18 @@ export default function App() {
         }
       >
 
+        {/*
         <Route path="dashboard" element={
           <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
             <Dashboard />
           </RoleProtectedRoute >
         }
-        />
+        />*/}
 
 
         <Route
           path="inventory"
+          index
           element={
             <RoleProtectedRoute allowedRoles={["picker", "manager", "admin"]}>
               <Inventory
@@ -209,35 +210,44 @@ export default function App() {
         <Route
           path="inventory/edit/:productId"
           element={
-            <EditProduct
-              onEdit={handleEditProduct}
-              getProduct={getProductBySku}
-            />
+            <RoleProtectedRoute allowedRoles={["picker", "admin"]}>
+              <EditProduct
+                onEdit={handleEditProduct}
+                getProduct={getProductBySku}
+              />
+            </RoleProtectedRoute>
           }
         />
 
-        <Route path="suppliers" element={<Suppliers />} />
+        <Route path="suppliers" element={
+          <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
+            <Suppliers />
+          </RoleProtectedRoute>
+        } />
 
         <Route
           path="suppliers/add"
-          element={<AddSupplier onAdd={handleAddSupplier} />}
+          element={
+            <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
+              <AddSupplier onAdd={handleAddSupplier} />
+            </RoleProtectedRoute>
+          }
 
         />
 
         <Route
           path="/suppliers/edit/:id"
           element={
-            <EditSupplier
-              suppliers={suppliers}
-              onUpdate={handleUpdateSupplier}
-            />
+            <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
+              <EditSupplier
+                suppliers={suppliers}
+                onUpdate={handleUpdateSupplier}
+              />
+            </RoleProtectedRoute>
           }
         />
 
-
-
         <Route path="settings" element={<Settings />} />
-
 
         <Route path="*" element={<div>Página não encontrada</div>} />
       </Route>

@@ -3,11 +3,11 @@ import { useContext } from "react";
 import { UserContext } from "../UserContext";
 
 const menuItems = [
-  { name: 'Dashboard', path: '/dashboard', icon: '📊', role: ['manager', 'admin'] },
+ /* { name: 'Dashboard', path: '/dashboard', icon: '📊', role: ['manager', 'admin'] },*/
   { name: 'Inventory', path: '/inventory', icon: '📦', role: ['picker', 'manager', 'admin'] },
   { name: "Suppliers", path: "/suppliers", icon: '👥', role: ['manager', 'admin'] },
   { name: "Purchase Orders", path: "/purchase-orders", icon: '🧾', role: ['supplier', 'manager', 'admin', 'picker'] },
-  { name: 'Settings', path: '/settings', icon: '⚙️', role: ['admin'] }
+  { name: 'Settings', path: '/settings', icon: '⚙️', role: ['supplier', 'manager', 'admin', 'picker']  }
 ];
 
 export default function Sidebar() {
@@ -18,6 +18,7 @@ export default function Sidebar() {
   if (!user) return null;
 
   return (
+    
     <aside className="w-60 bg-primary flex flex-col p-4 shadow-lg border-r-[1px] border-r-[#374151]" >
       <div className="flex items-center gap-3 mb-8 p-2">
         <div className="w-10 h-10 bg-gray-700 border-2 border-accent rounded-full flex items-center justify-center">
