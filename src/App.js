@@ -22,11 +22,11 @@ const getInitialState = () => {
 };
 
 export default function App() {
-  const [products, setProducts] = useState(getInitialState); 
+  const [products, setProducts] = useState(getInitialState);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-  }, [products]); 
+  }, [products]);
 
   const handleAddProduct = (newProduct) => {
     const productWithId = { ...newProduct, id: newProduct.productId };
@@ -38,13 +38,13 @@ export default function App() {
       prevProducts.map(p => (p.productId === updatedProduct.productId ? updatedProduct : p))
     );
   };
-  
+
   const handleDeleteProduct = (productIdToDelete) => {
     setProducts(prevProducts =>
       prevProducts.filter(p => p.productId !== productIdToDelete)
     );
   };
-  
+
   const getProductBySku = (productId) => {
     return products.find(p => p.productId === productId);
   };
@@ -61,21 +61,35 @@ export default function App() {
           </ProtectedRoute>
         }
       >
-        <Route path="dashboard" element={<Dashboard />} />
+
+        <Route path="dashboard" element={
+          <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
+            <Dashboard />
+          </RoleProtectedRoute >
+        }
+        />
+
 
         <Route
           path="inventory"
           element={
-            <Inventory 
-              products={products} 
-              handleDeleteProduct={handleDeleteProduct} 
-            />
+            <RoleProtectedRoute allowedRoles={["picker", "manager", "admin"]}>
+              <Inventory
+                products={products}
+                handleDeleteProduct={handleDeleteProduct}
+              />
+            </RoleProtectedRoute>
+
           }
         />
 
         <Route
           path="inventory/add"
-          element={<AddProduct onAdd={handleAddProduct} />}
+          element={
+            <RoleProtectedRoute allowedRoles={["picker", "admin"]}>
+              <AddProduct onAdd={handleAddProduct} />
+            </RoleProtectedRoute>
+          }
         />
 
         <Route

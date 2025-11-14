@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useContext } from "react";
+import { UserContext } from "../UserContext";
 
 function ConfirmationModal({ isOpen, onClose, onConfirm, productName }) {
     if (!isOpen) return null;
@@ -9,7 +11,7 @@ function ConfirmationModal({ isOpen, onClose, onConfirm, productName }) {
             <div className="bg-gray-800 p-6 rounded-xl shadow-2xl w-full max-w-md border border-gray-700">
                 <h2 className="text-xl font-bold text-red-400 mb-4">Confirm Deletion</h2>
                 <p className="text-gray-300 mb-6">
-                    Are you sure you want to delete the product: <br/>
+                    Are you sure you want to delete the product: <br />
                     <strong className="text-white font-semibold">"{productName}"</strong>?
                     This action cannot be undone.
                 </p>
@@ -33,15 +35,16 @@ function ConfirmationModal({ isOpen, onClose, onConfirm, productName }) {
 }
 
 function InventoryTable({ products, selectedProductIds, setselectedProductIds, openDeleteModal }) {
-    
+    const { user } = useContext(UserContext);
+
     const handleSelect = (productId) => {
-        setselectedProductIds(prev => 
-            prev.includes(productId) 
+        setselectedProductIds(prev =>
+            prev.includes(productId)
                 ? prev.filter(s => s !== productId)
                 : [...prev, productId]
         );
     };
-    
+
     const handleSelectAll = () => {
         if (selectedProductIds.length === products.length) {
             setselectedProductIds([]);
@@ -49,12 +52,12 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
             setselectedProductIds(products.map(p => p.productId));
         }
     };
-    
+
     const renderStatus = (inStock) => {
         const stock = parseInt(inStock, 10);
         let statusClass = 'bg-green-600';
         let statusText = 'OK';
-        
+
         if (stock <= 5 && stock > 0) {
             statusClass = 'bg-yellow-500';
             statusText = 'ALERT';
@@ -69,14 +72,14 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
             </span>
         );
     };
-    
+
     return (
         <div className="bg-gray-900/50 shadow-xl rounded-xl overflow-hidden border border-gray-700">
             <table className="min-w-full text-left">
                 <thead className="bg-gray-800 uppercase text-xs text-gray-400 font-medium tracking-wider">
                     <tr>
                         <th scope="col" className="px-3 py-3 w-10">
-                            <input 
+                            <input
                                 type="checkbox"
                                 checked={selectedProductIds.length === products.length && products.length > 0}
                                 onChange={handleSelectAll}
@@ -91,11 +94,13 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                         <th scope="col" className="px-4 py-3 text-center">Stock</th>
                         <th scope="col" className="px-6 py-3">Location</th>
                         <th scope="col" className="px-6 py-3">Exp. Date</th>
-                        <th scope="col" className="px-6 py-3">Status</th>      
-                        <th scope="col" className="px-6 py-3">Actions</th>
+                        <th scope="col" className="px-6 py-3">Status</th>
+                        {user?.role === "picker" && (
+                            <th scope="col" className="px-6 py-3">Actions</th>
+                        )}
                     </tr>
                 </thead>
-                
+
                 <tbody className="divide-y divide-gray-700">
                     {products.length === 0 ? (
                         <tr>
@@ -106,9 +111,9 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                     ) : (
                         products.map((product) => (
                             <tr key={product.productId} className="hover:bg-gray-800 transition-colors">
-                                
+
                                 <td className="px-3 py-4">
-                                    <input 
+                                    <input
                                         type="checkbox"
                                         checked={selectedProductIds.includes(product.sku)}
                                         onChange={() => handleSelect(product.sku)}
@@ -130,30 +135,31 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                                     {product.expirationDate || 'N/A'}
                                 </td>
                                 <td className="px-6 py-4">{renderStatus(product.inStock)}</td>
-                                <td className="px-6 py-4">
-                                    <div className="flex gap-4 text-sm font-medium">
-                                        <Link
-                                            to={`/inventory/edit/${product.productId}`}
-                                            title="Edit"
-                                            className="text-gray-400 hover:text-blue-400 transition-colors"
-                                        >
-                                            Edit
-                                        </Link>
-                                        <button
-                                            onClick={() => openDeleteModal(product)}
-                                            title="Delete"
-                                            className="text-gray-400 hover:text-red-500 transition-colors"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-                                </td>
+                                {user?.role === "picker" && (
+                                    <td className="px-6 py-4">
+                                        <div className="flex gap-4 text-sm font-medium">
+                                            <Link
+                                                to={`/inventory/edit/${product.productId}`}
+                                                title="Edit"
+                                                className="text-gray-400 hover:text-blue-400 transition-colors"
+                                            >
+                                                Edit
+                                            </Link>
+                                            <button
+                                                onClick={() => openDeleteModal(product)}
+                                                title="Delete"
+                                                className="text-gray-400 hover:text-red-500 transition-colors"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </td>)}
                             </tr>
                         ))
                     )}
                 </tbody>
             </table>
-            
+
             <div className="flex justify-between items-center px-4 py-3 border-t border-gray-700 bg-gray-800/50 text-sm">
                 <span className='text-gray-400 text-sm'>
                     Showing 1 to {products.length} of {products.length} entries
@@ -170,14 +176,15 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
 }
 
 export default function Inventory({ products, handleDeleteProduct }) {
-    
+    const { user } = useContext(UserContext);
+
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
     const [selectedProductIds, setselectedProductIds] = useState([]);
-    
-    
-    const [filterStatus, setFilterStatus] = useState(''); 
+
+
+    const [filterStatus, setFilterStatus] = useState('');
 
     const openDeleteModal = (product) => {
         setProductToDelete(product);
@@ -191,12 +198,12 @@ export default function Inventory({ products, handleDeleteProduct }) {
 
     const handleConfirmDelete = () => {
         if (productToDelete) {
-            handleDeleteProduct(productToDelete.productId); 
+            handleDeleteProduct(productToDelete.productId);
             closeDeleteModal();
         }
     };
-    
-    
+
+
     const getProductStatus = (inStock) => {
         const stock = parseInt(inStock, 10);
         if (stock === 0) return 'critical';
@@ -204,12 +211,12 @@ export default function Inventory({ products, handleDeleteProduct }) {
         return 'ok';
     };
 
-    
+
     const filteredProducts = products.filter(p => {
-        
+
         const matchesSearchTerm = p.name.toLowerCase().includes(searchTerm.toLowerCase());
-        
-        
+
+
         const matchesStatus = filterStatus === '' || getProductStatus(p.inStock) === filterStatus;
 
         return matchesSearchTerm && matchesStatus;
@@ -217,11 +224,11 @@ export default function Inventory({ products, handleDeleteProduct }) {
 
     return (
         <div className="max-w-7xl mx-auto py-10">
-            
+
             <h1 className="text-3xl font-extrabold text-white mb-6">Inventory Management</h1>
-            
+
             <div className="flex justify-between items-center mb-8">
-                
+
                 <div className="flex gap-4">
                     <input
                         type="text"
@@ -230,31 +237,31 @@ export default function Inventory({ products, handleDeleteProduct }) {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 focus:ring-teal-500 focus:border-teal-500 w-80 shadow-inner"
                     />
-                    
-                    {}
+
                     <select
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
                         className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:ring-teal-500 focus:border-teal-500 shadow-inner"
                     >
-                        {}
-                        <option value="">Filter by Availability</option> 
+                        <option value="">Filter by Availability</option>
                         <option value="ok">OK</option>
                         <option value="alert">ALERT</option>
                         <option value="critical">CRITICAL</option>
                     </select>
                 </div>
-                
-                <Link
-                    to="/inventory/add"
-                    className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50 transform hover:scale-[1.01]"
-                >
-                    Add New Product +
-                </Link>
+
+                {user?.role === "picker" && (
+                    <Link
+                        to="/inventory/add"
+                        className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50 transform hover:scale-[1.01]"
+                    >
+                        Add New Product +
+                    </Link>
+                )}
             </div>
 
-            <InventoryTable 
-                products={filteredProducts} 
+            <InventoryTable
+                products={filteredProducts}
                 selectedProductIds={selectedProductIds}
                 setselectedProductIds={setselectedProductIds}
                 openDeleteModal={openDeleteModal}
