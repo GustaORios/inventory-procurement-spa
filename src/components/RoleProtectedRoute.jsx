@@ -8,7 +8,7 @@ export default function RoleProtectedRoute({ allowedRoles, children }) {
   }
 
   if (!allowedRoles.includes(user.role)) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/purchase-orders" replace />;
   }
 
   return children;

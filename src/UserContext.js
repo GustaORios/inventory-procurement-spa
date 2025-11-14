@@ -20,7 +20,7 @@ export function UserProvider({ children }) {
         const userData = { username, role };
         localStorage.setItem("user", JSON.stringify(userData));
         setUser(userData);
-        navigate("/");
+        navigate("/purchase-orders");
     };
 
     const logout = () => {
