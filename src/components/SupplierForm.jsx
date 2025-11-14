@@ -11,6 +11,7 @@ export default function SupplierForm({ title, initialData, onSave }) {
     email: '',
     role: '',
     notes: '',
+    status: '',
     createdAt: '',
     updatedAt: ''
   };
@@ -92,7 +93,7 @@ export default function SupplierForm({ title, initialData, onSave }) {
         className="bg-gray-900/50 p-8 rounded-xl shadow-2xl border border-gray-700"
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
+
           {/* Left column: Name and Notes */}
           <div className="md:col-span-2 space-y-6">
             {/* Supplier Name */}
@@ -145,6 +146,26 @@ export default function SupplierForm({ title, initialData, onSave }) {
               />
               {errors.email && <span className="text-xs text-red-500 mt-1">{errors.email}</span>}
             </div>
+
+            {/* Status */}
+            <div>
+              <label htmlFor="status" className="block text-sm font-medium text-gray-300 mb-1">
+                Status
+              </label>
+              <select
+                id="status"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:ring-teal-500 focus:border-teal-500 shadow-inner"
+              >
+                <option value="" className="bg-gray-900 text-gray-500">Select status</option>
+                <option value="ACTIVE" className="bg-gray-900">Active</option>
+                <option value="INACTIVE" className="bg-gray-900">Inactive</option>
+                <option value="PENDING" className="bg-gray-900">Pending</option>
+              </select>
+            </div>
+
 
             {/* Role (acts like Category in your table) */}
             <div>

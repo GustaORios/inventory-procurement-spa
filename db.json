@@ -43,27 +43,27 @@
       "name": "Global Trade Supplies Ltd.",
       "email": "contact@globaltrade.com",
       "role": "client",
-      "status": "OK",
+      "status": "PENDING",
       "createdAt": "2024-07-15T10:23:45Z",
-      "updatedAt": "2025-03-10T16:42:19Z"
+      "updatedAt": "2025-11-13T23:19:18.746Z"
     },
     {
       "id": "b19cfd43-4f25-4bb8-8e1a-29b0dc8cb6c2",
       "name": "Pacific Logistics Co.",
       "email": "info@pacificlogistics.ca",
       "role": "client",
-      "status": "OK",
+      "status": "INACTIVE",
       "createdAt": "2023-11-22T08:15:30Z",
-      "updatedAt": "2025-02-28T13:12:05Z"
+      "updatedAt": "2025-11-13T23:19:05.714Z"
     },
     {
       "id": "7a62c1e4-s1d8f-496c-9314-952b2c631b9ac",
       "name": "Evergreen imports",
       "email": "support@powerpuffgirls.com",
       "role": "picker",
-      "status": "CRITICAL",
+      "status": "ACTIVE",
       "createdAt": "2024-02-10T09:00:00Z",
-      "updatedAt": "2025-01-17T11:22:33Z"
+      "updatedAt": "2025-11-13T23:19:10.362Z"
     },
     {
       "id": "82c9ec48-6c03-41d6-849f-4570046f2767",
@@ -72,16 +72,38 @@
       "role": "packer",
       "notes": "",
       "createdAt": "2025-11-13T08:01:12.943Z",
-      "updatedAt": "2025-11-13T08:01:27.215Z"
+      "updatedAt": "2025-11-13T23:19:24.561Z",
+      "status": "ACTIVE"
     },
     {
-      "id": "50fecc59-c879-4c51-a337-16424bda65f3",
-      "name": "safasdf",
-      "email": "sfasasdf@asdfads.com",
+      "id": "ebb739d7-1f05-41d5-aed5-34f71285efb1",
+      "name": "ASFAKDSJKD",
+      "email": "NELSON@GMAIL.COM",
       "role": "packer",
       "notes": "",
-      "createdAt": "2025-11-13T08:01:53.055Z",
-      "updatedAt": "2025-11-13T08:02:01.384Z"
+      "status": "ACTIVE",
+      "createdAt": "2025-11-13T22:49:16.690Z",
+      "updatedAt": "2025-11-13T22:49:30.918Z"
+    },
+    {
+      "id": "9a641e10-df12-4bd1-8700-25f85b8c3f05",
+      "name": "ASLKDFJASFLKD",
+      "email": "ASFJASFLD@GMAIL.COM",
+      "role": "picker",
+      "notes": "",
+      "status": "INACTIVE",
+      "createdAt": "2025-11-13T22:49:38.332Z",
+      "updatedAt": "2025-11-13T22:50:08.432Z"
+    },
+    {
+      "id": "cb8b40b0-f9a9-46f7-a276-7d5dda135404",
+      "name": "ASFASDF",
+      "email": "ASDFSA@GMAIL.COM",
+      "role": "packer",
+      "notes": "",
+      "status": "PENDING",
+      "createdAt": "2025-11-13T22:50:10.591Z",
+      "updatedAt": "2025-11-13T22:50:20.875Z"
     }
   ]
 }

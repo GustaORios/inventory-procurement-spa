@@ -57,9 +57,9 @@ export default function SuppliersPage() {
   }
   // /color status
   const renderStatus = (status) => {
-    if (status === "OK") return "bg-green-600 text-white";
-    if (status === "ALERT") return "bg-yellow-500 text-black";
-    if (status === "CRITICAL") return "bg-red-600 text-white";
+    if (status === "ACTIVE") return "bg-green-600 text-white";
+    if (status === "PENDING") return "bg-yellow-500 text-black";
+    if (status === "INACTIVE") return "bg-red-600 text-white";
     return "";
   };
 
@@ -86,9 +86,9 @@ export default function SuppliersPage() {
           className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:ring-teal-500 focus:border-teal-500 shadow-inner"
         >
           <option value="">Filter by Availability</option>
-          <option value="ok">OK</option>
-          <option value="alert">ALERT</option>
-          <option value="critical">CRITICAL</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="pending">Pending</option>
         </select>
 
 

@@ -8,6 +8,8 @@ import EditProduct from './pages/EditProduct';
 import Suppliers from './pages/SuppliersPage';
 import AddSupplier from './pages/AddSuplier';
 import Settings from './pages/Settings';
+import EditSupplier from './pages/EditSupplier';
+
 
 
 
@@ -90,13 +92,54 @@ export default function App() {
   };
 
 
-
   // Função para EDITAR um produto existente
   const handleEditProduct = (sku, updatedProduct) => {
     setProducts(prevProducts =>
       prevProducts.map(p => (p.sku === sku ? { ...p, ...updatedProduct } : p))
     );
   };
+
+  ///////////////////////////////////////prueba
+  const handleUpdateSupplier = async (updatedSupplier) => {
+    try {
+      const res = await fetch(`/suppliers/${updatedSupplier.id}`, {
+        method: "PUT", // o PATCH, según tu json-server
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedSupplier),
+      });
+
+      if (!res.ok) throw new Error("No se pudo actualizar el supplier");
+
+      const savedSupplier = await res.json();
+
+      // Actualizar estado local
+      setSuppliers((prev) =>
+        prev.map((s) => (s.id === savedSupplier.id ? savedSupplier : s))
+      );
+    } catch (err) {
+      console.error(err);
+      alert("Error actualizando supplier");
+    }
+  };
+  useEffect(() => {
+    const loadSuppliers = async () => {
+      try {
+        const res = await fetch("/suppliers");
+        const data = await res.json();
+        setSuppliers(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadSuppliers();
+  }, []);
+
+
+
+
+
+
 
   // Função para ENCONTRAR um produto pelo SKU (necessário para a tela de edição)
   const getProductBySku = (sku) => {
@@ -135,7 +178,21 @@ export default function App() {
         <Route
           path="suppliers/add"
           element={<AddSupplier onAdd={handleAddSupplier} />}
+
         />
+
+        <Route
+          path="/suppliers/edit/:id"
+          element={
+            <EditSupplier
+              suppliers={suppliers}
+              onUpdate={handleUpdateSupplier}
+            />
+          }
+        />
+
+
+
         <Route path="settings" element={<Settings />} />
 
 
