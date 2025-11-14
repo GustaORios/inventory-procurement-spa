@@ -198,7 +198,7 @@ export default function Inventory({ products, handleDeleteProduct }) {
 
     const handleConfirmDelete = () => {
         if (productToDelete) {
-            handleDeleteProduct(productToDelete.productId);
+            handleDeleteProduct(productToDelete.id);
             closeDeleteModal();
         }
     };
