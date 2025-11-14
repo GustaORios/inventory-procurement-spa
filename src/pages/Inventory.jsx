@@ -95,7 +95,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                         <th scope="col" className="px-6 py-3">Location</th>
                         <th scope="col" className="px-6 py-3">Exp. Date</th>
                         <th scope="col" className="px-6 py-3">Status</th>
-                        {user?.role === "picker" && (
+                        {user?.role != "supplier"  && (
                             <th scope="col" className="px-6 py-3">Actions</th>
                         )}
                     </tr>
@@ -135,7 +135,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                                     {product.expirationDate || 'N/A'}
                                 </td>
                                 <td className="px-6 py-4">{renderStatus(product.inStock)}</td>
-                                {user?.role === "picker" && (
+                                {user?.role != "supplier" &&(
                                     <td className="px-6 py-4">
                                         <div className="flex gap-4 text-sm font-medium">
                                             <Link
@@ -198,7 +198,7 @@ export default function Inventory({ products, handleDeleteProduct }) {
 
     const handleConfirmDelete = () => {
         if (productToDelete) {
-            handleDeleteProduct(productToDelete.productId);
+            handleDeleteProduct(productToDelete.id);
             closeDeleteModal();
         }
     };
@@ -250,7 +250,7 @@ export default function Inventory({ products, handleDeleteProduct }) {
                     </select>
                 </div>
 
-                {user?.role === "picker" && (
+                {user?.role != "supplier" &&(
                     <Link
                         to="/inventory/add"
                         className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50 transform hover:scale-[1.01]"

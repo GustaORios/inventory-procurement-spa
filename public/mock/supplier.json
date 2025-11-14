@@ -4,6 +4,7 @@
     "name": "Global Trade Supplies Ltd.",
     "email": "contact@globaltrade.com",
     "role": "client",
+    "status":"OK",
     "createdAt": "2024-07-15T10:23:45Z",
     "updatedAt": "2025-03-10T16:42:19Z"
   },
@@ -12,6 +13,7 @@
     "name": "Pacific Logistics Co.",
     "email": "info@pacificlogistics.ca",
     "role": "client",
+    "status":"OK",
     "createdAt": "2023-11-22T08:15:30Z",
     "updatedAt": "2025-02-28T13:12:05Z"
   },
@@ -20,6 +22,16 @@
     "name": "Evergreen Imports",
     "email": "support@powerpuffgirls.com",
     "role": "picker",
+    "status":"OK",
+    "createdAt": "2024-02-10T09:00:00Z",
+    "updatedAt": "2025-01-17T11:22:33Z"
+  },
+   {
+    "id": "7a62c1e4-s1d8f-496c-9314-95b2c631b9ac",
+    "name": "Evergreen Imports",
+    "email": "support@powerpuffgirls.com",
+    "role": "picker",
+    "status":"CRITICAL",
     "createdAt": "2024-02-10T09:00:00Z",
     "updatedAt": "2025-01-17T11:22:33Z"
   }
