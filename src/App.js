@@ -93,9 +93,6 @@ export default function App() {
     }
   };
 
-
-  // Função para EDITAR um produto existente
-  const handleEditProduct = (sku, updatedProduct) => {
   const handleDeleteProduct = (productIdToDelete) => {
     setProducts(prevProducts =>
       prevProducts.filter(p => p.productId !== productIdToDelete)
