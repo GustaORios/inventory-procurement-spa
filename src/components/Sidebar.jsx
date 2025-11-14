@@ -3,15 +3,15 @@ import { useContext } from "react";
 import { UserContext } from "../UserContext";
 
 const menuItems = [
-  { name: 'Dashboard', path: '/dashboard', icon: '📊' },
-  { name: 'Inventory', path: '/inventory', icon: '📦' },
-  { name: "Suppliers", path: "/suppliers", icon: '👥' },
-  { name: "Purchase Orders", path: "/purchase-orders", icon: '🧾' },
-  { name: 'Settings', path: '/settings', icon: '⚙️' }
+  { name: 'Dashboard', path: '/dashboard', icon: '📊', role: ['manager', 'admin'] },
+  { name: 'Inventory', path: '/inventory', icon: '📦', role: ['picker', 'manager', 'admin'] },
+  { name: "Suppliers", path: "/suppliers", icon: '👥', role: ['manager', 'admin'] },
+  { name: "Purchase Orders", path: "/purchase-orders", icon: '🧾', role: ['supplier', 'manager', 'admin', 'picker'] },
+  { name: 'Settings', path: '/settings', icon: '⚙️', role: ['admin'] }
 ];
 
 export default function Sidebar() {
-  const { user, logout } = useContext(UserContext); 
+  const { user, logout } = useContext(UserContext);
   const activeClass = "bg-accent text-white font-semibold";
   const inactiveClass = "hover:bg-gray-700";
 
@@ -27,19 +27,20 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex flex-col gap-2">
-        {menuItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
-                isActive ? activeClass : inactiveClass
-              }`
-            }
-          >
-            {item.icon} {item.name}
-          </NavLink>
-        ))}
+        {menuItems
+          .filter(item => item.role.includes(user.role))
+          .map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${isActive ? activeClass : inactiveClass
+                }`
+              }
+            >
+              {item.icon} {item.name}
+            </NavLink>
+          ))}
       </nav>
 
       <div className="flex flex-col gap-2 border-t border-gray-700 pt-4 mt-auto">
