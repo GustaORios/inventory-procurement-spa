@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'; // 👈 IMPORTAR useEffect
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
-import Dashboard from './layouts/DashboardLayout';
+import Dashboard from './pages/DashboardLayout';
 import Inventory from './pages/Inventory';
 import AddProduct from './pages/AddProduct';
 import EditProduct from './pages/EditProduct';
@@ -13,8 +13,10 @@ import EditSupplier from './pages/EditSupplier';
 
 
 
+import Login from './pages/Login';
+import ProtectedRoute from './components/ProtectedRoute';
+import RoleProtectedRoute from './components/RoleProtectedRoute';
 
-// Chave que usaremos para salvar no localStorage
 const STORAGE_KEY = 'inventory_products';
 
 // Dados de exemplo, usados SOMENTE se não houver nada no localStorage
@@ -45,10 +47,8 @@ const INITIAL_PRODUCTS = [
 const getInitialState = () => {
   const savedProducts = localStorage.getItem(STORAGE_KEY);
   if (savedProducts) {
-    // Converte a string JSON de volta para um array de objetos
     return JSON.parse(savedProducts);
   }
-  // Se não houver nada salvo, retorna os produtos iniciais
   return INITIAL_PRODUCTS;
 };
 
@@ -57,17 +57,19 @@ export default function App() {
   const [products, setProducts] = useState(getInitialState);
   const [suppliers, setSuppliers] = useState([]);
 
-  // 2. Sincroniza o estado com o localStorage sempre que 'products' mudar
   useEffect(() => {
-    // Converte o array de objetos para uma string JSON
     localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-  }, [products]); // O array de dependências garante que isso rode apenas quando 'products' for alterado
+  }, [products]);
 
-  // Função para ADICIONAR um novo produto
   const handleAddProduct = (newProduct) => {
-    // Use o SKU como ID simples para a persistência
-    const productWithId = { ...newProduct, id: newProduct.sku };
-    setProducts(prevProducts => [...prevProducts, productWithId]);
+    const productWithId = { ...newProduct, id: newProduct.productId };
+    setProducts(prevProducts => [productWithId, ...prevProducts]);
+  };
+
+  const handleEditProduct = (updatedProduct) => {
+    setProducts(prevProducts =>
+      prevProducts.map(p => (p.productId === updatedProduct.productId ? updatedProduct : p))
+    );
   };
 
   const handleAddSupplier = async (newSupplier) => {
@@ -94,8 +96,9 @@ export default function App() {
 
   // Função para EDITAR um produto existente
   const handleEditProduct = (sku, updatedProduct) => {
+  const handleDeleteProduct = (productIdToDelete) => {
     setProducts(prevProducts =>
-      prevProducts.map(p => (p.sku === sku ? { ...p, ...updatedProduct } : p))
+      prevProducts.filter(p => p.productId !== productIdToDelete)
     );
   };
 
@@ -135,36 +138,56 @@ export default function App() {
     loadSuppliers();
   }, []);
 
-
-
-
-
-
-
-  // Função para ENCONTRAR um produto pelo SKU (necessário para a tela de edição)
-  const getProductBySku = (sku) => {
-    return products.find(p => p.sku === sku);
+  // Função para ENCONTRAR um produto pelo SKU (necessário para a tela de edição
+  const getProductBySku = (productId) => {
+    return products.find(p => p.productId === productId);
   };
 
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Navigate to="/dashboard" replace />} />
+      <Route path="/login" element={<Login />} />
 
-        <Route path="dashboard" element={<Dashboard />} />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Layout />
+          </ProtectedRoute>
+        }
+      >
+
+        <Route path="dashboard" element={
+          <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
+            <Dashboard />
+          </RoleProtectedRoute >
+        }
+        />
+
 
         <Route
           path="inventory"
-          element={<Inventory products={products} />}
+          element={
+            <RoleProtectedRoute allowedRoles={["picker", "manager", "admin"]}>
+              <Inventory
+                products={products}
+                handleDeleteProduct={handleDeleteProduct}
+              />
+            </RoleProtectedRoute>
+
+          }
         />
 
         <Route
           path="inventory/add"
-          element={<AddProduct onAdd={handleAddProduct} />}
+          element={
+            <RoleProtectedRoute allowedRoles={["picker", "admin"]}>
+              <AddProduct onAdd={handleAddProduct} />
+            </RoleProtectedRoute>
+          }
         />
 
         <Route
-          path="inventory/edit/:sku"
+          path="inventory/edit/:productId"
           element={
             <EditProduct
               onEdit={handleEditProduct}
