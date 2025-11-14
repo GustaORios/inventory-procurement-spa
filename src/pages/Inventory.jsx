@@ -35,6 +35,7 @@ function ConfirmationModal({ isOpen, onClose, onConfirm, productName }) {
 }
 
 function InventoryTable({ products, selectedProductIds, setselectedProductIds, openDeleteModal }) {
+    const { user } = useContext(UserContext);
 
     const handleSelect = (productId) => {
         setselectedProductIds(prev =>
@@ -94,7 +95,9 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                         <th scope="col" className="px-6 py-3">Location</th>
                         <th scope="col" className="px-6 py-3">Exp. Date</th>
                         <th scope="col" className="px-6 py-3">Status</th>
-                        <th scope="col" className="px-6 py-3">Actions</th>
+                        {user?.role === "picker" && (
+                            <th scope="col" className="px-6 py-3">Actions</th>
+                        )}
                     </tr>
                 </thead>
 
@@ -132,24 +135,25 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                                     {product.expirationDate || 'N/A'}
                                 </td>
                                 <td className="px-6 py-4">{renderStatus(product.inStock)}</td>
-                                <td className="px-6 py-4">
-                                    <div className="flex gap-4 text-sm font-medium">
-                                        <Link
-                                            to={`/inventory/edit/${product.productId}`}
-                                            title="Edit"
-                                            className="text-gray-400 hover:text-blue-400 transition-colors"
-                                        >
-                                            Edit
-                                        </Link>
-                                        <button
-                                            onClick={() => openDeleteModal(product)}
-                                            title="Delete"
-                                            className="text-gray-400 hover:text-red-500 transition-colors"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-                                </td>
+                                {user?.role === "picker" && (
+                                    <td className="px-6 py-4">
+                                        <div className="flex gap-4 text-sm font-medium">
+                                            <Link
+                                                to={`/inventory/edit/${product.productId}`}
+                                                title="Edit"
+                                                className="text-gray-400 hover:text-blue-400 transition-colors"
+                                            >
+                                                Edit
+                                            </Link>
+                                            <button
+                                                onClick={() => openDeleteModal(product)}
+                                                title="Delete"
+                                                className="text-gray-400 hover:text-red-500 transition-colors"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </td>)}
                             </tr>
                         ))
                     )}
@@ -246,7 +250,7 @@ export default function Inventory({ products, handleDeleteProduct }) {
                     </select>
                 </div>
 
-                {user?.role !== "picker" && (
+                {user?.role === "picker" && (
                     <Link
                         to="/inventory/add"
                         className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50 transform hover:scale-[1.01]"
