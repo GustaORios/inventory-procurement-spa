@@ -90,6 +90,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                         <th scope="col" className="px-6 py-3">Product Name</th>
                         <th scope="col" className="px-6 py-3">Category</th>
                         <th scope="col" className="px-6 py-3">Brand</th>
+                        <th scope="col" className="px-6 py-3">Supplier</th> {/* // <-- NOVO CABEÇALHO */}
                         <th scope="col" className="px-4 py-3 text-right">Price</th>
                         <th scope="col" className="px-4 py-3 text-center">Stock</th>
                         <th scope="col" className="px-6 py-3">Location</th>
@@ -104,7 +105,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                 <tbody className="divide-y divide-gray-700">
                     {products.length === 0 ? (
                         <tr>
-                            <td colSpan="11" className="px-6 py-4 text-center text-gray-500">
+                            <td colSpan="12" className="px-6 py-4 text-center text-gray-500"> {/* // <-- colSpan ATUALIZADO DE 11 PARA 12 */}
                                 No products listed.
                             </td>
                         </tr>
@@ -124,6 +125,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                                 <td className="px-6 py-4 font-medium text-white">{product.name}</td>
                                 <td className="px-6 py-4 text-gray-300">{product.category}</td>
                                 <td className="px-6 py-4 text-gray-300">{product.brand}</td>
+                                <td className="px-6 py-4 text-gray-300">{product.supplier || 'N/A'}</td> {/* // <-- NOVO DADO */}
                                 <td className="px-4 py-4 text-right text-teal-400 font-mono">
                                     ${parseFloat(product.price).toFixed(2)}
                                 </td>
