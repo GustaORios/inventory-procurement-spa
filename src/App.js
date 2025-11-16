@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
-import Dashboard from './pages/DashboardLayout';
 import Inventory from './pages/Inventory';
 import AddProduct from './pages/AddProduct';
 import EditProduct from './pages/EditProduct';
@@ -9,68 +8,81 @@ import Suppliers from './pages/SuppliersPage';
 import AddSupplier from './pages/AddSuplier';
 import Settings from './pages/Settings';
 import EditSupplier from './pages/EditSupplier';
-
-
-
-
 import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
+import PurchaseOrders from './pages/PurchaseOrdersPage';
+import PurchaseOrdersDetail from './pages/PurchaseOrdersDetailPage';
 
-const STORAGE_KEY = 'inventory_products';
-
-// Dados de exemplo, usados SOMENTE se não houver nada no localStorage
-const INITIAL_PRODUCTS = [
-  {
-    id: 'MON-24-GAM',
-    name: 'Monitor Gamer 24"',
-    sku: 'MON-24-GAM',
-    category: 'Monitores',
-    description: 'Um monitor gamer com alta taxa de atualização.',
-    supplier: 'TechImports',
-    price: 1200.50,
-    inStock: 15
-  },
-  {
-    id: 'TEC-MEC-01',
-    name: 'Teclado Mecânico RGB',
-    sku: 'TEC-MEC-01',
-    category: 'Periféricos',
-    description: 'Teclado com switches blue e iluminação RGB.',
-    supplier: 'GamerGear',
-    price: 350.00,
-    inStock: 30
-  },
-];
-
-// Função que LÊ os dados do localStorage (Usada para inicialização Lenta)
-const getInitialState = () => {
-  const savedProducts = localStorage.getItem(STORAGE_KEY);
-  if (savedProducts) {
-    return JSON.parse(savedProducts);
-  }
-  return INITIAL_PRODUCTS;
-};
 
 export default function App() {
-  // 1. Inicializa o estado lendo do localStorage
-  const [products, setProducts] = useState(getInitialState);
+  const [products, setProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-  }, [products]);
+    const loadProducts = async () => {
+      try {
+        const res = await fetch("/products");
+        if (!res.ok) throw new Error("Theres no producst to show");
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-  const handleAddProduct = (newProduct) => {
-    const productWithId = { ...newProduct, id: newProduct.productId };
-    setProducts(prevProducts => [productWithId, ...prevProducts]);
+    loadProducts();
+  }, []);
+
+
+  const handleAddProduct = async (newProduct) => {
+    try {
+      const productToSave = {
+        ...newProduct,
+        productId: newProduct.productId || newProduct.sku || crypto.randomUUID?.() || String(Date.now()),
+      };
+
+      const res = await fetch("/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(productToSave),
+      });
+
+      if (!res.ok) throw new Error("there is no product to show");
+
+      const savedProduct = await res.json();
+
+      setProducts(prev => [...prev, savedProduct]);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleEditProduct = (updatedProduct) => {
-    setProducts(prevProducts =>
-      prevProducts.map(p => (p.productId === updatedProduct.productId ? updatedProduct : p))
-    );
+
+
+  const handleEditProduct = async (updatedProduct) => {
+    try {
+      const res = await fetch(`/products/${updatedProduct.id}`, {
+        method: "PUT",      // o PATCH
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedProduct),
+      });
+
+      if (!res.ok) throw new Error("we couldn't update the product");
+
+      const savedProduct = await res.json();
+
+      setProducts(prev =>
+        prev.map(p =>
+          p.id === savedProduct.id ? savedProduct : p
+        )
+      );
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+
 
   const handleAddSupplier = async (newSupplier) => {
     try {
@@ -80,24 +92,36 @@ export default function App() {
         body: JSON.stringify(newSupplier)
       });
 
-      if (!res.ok) throw new Error("No se pudo agregar el supplier");
+      if (!res.ok) throw new Error("something whent wrong");
 
-      const savedSupplier = await res.json(); // json-server regresa el objeto creado
+      const savedSupplier = await res.json();
 
-      // Actualizar el estado local (opcional pero recomendado)
       setSuppliers(prev => [...prev, savedSupplier]);
 
     } catch (err) {
       console.error(err);
-      alert("Error agregando supplier");
     }
   };
 
-  const handleDeleteProduct = (productIdToDelete) => {
-    setProducts(prevProducts =>
-      prevProducts.filter(p => p.productId !== productIdToDelete)
-    );
+
+  const handleDeleteProduct = async (idToDelete) => {
+    try {
+      const res = await fetch(`/products/${idToDelete}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) throw new Error("something went wrong");
+
+      setProducts(prev =>
+        prev.filter(p => p.id !== idToDelete)
+      );
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+
+
 
   ///////////////////////////////////////prueba
   const handleUpdateSupplier = async (updatedSupplier) => {
@@ -153,16 +177,18 @@ export default function App() {
         }
       >
 
+        {/*
         <Route path="dashboard" element={
           <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
             <Dashboard />
           </RoleProtectedRoute >
         }
-        />
+        />*/}
 
 
         <Route
           path="inventory"
+          index
           element={
             <RoleProtectedRoute allowedRoles={["picker", "manager", "admin"]}>
               <Inventory
@@ -186,34 +212,56 @@ export default function App() {
         <Route
           path="inventory/edit/:productId"
           element={
-            <EditProduct
-              onEdit={handleEditProduct}
-              getProduct={getProductBySku}
-            />
+            <RoleProtectedRoute allowedRoles={["picker", "admin"]}>
+              <EditProduct
+                onEdit={handleEditProduct}
+                getProduct={getProductBySku}
+              />
+            </RoleProtectedRoute>
           }
         />
 
-        <Route path="suppliers" element={<Suppliers />} />
+        <Route path="suppliers" element={
+          <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
+            <Suppliers />
+          </RoleProtectedRoute>
+        } />
 
         <Route
           path="suppliers/add"
-          element={<AddSupplier onAdd={handleAddSupplier} />}
+          element={
+            <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
+              <AddSupplier onAdd={handleAddSupplier} />
+            </RoleProtectedRoute>
+          }
 
         />
 
         <Route
           path="/suppliers/edit/:id"
           element={
-            <EditSupplier
-              suppliers={suppliers}
-              onUpdate={handleUpdateSupplier}
-            />
+            <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
+              <EditSupplier
+                suppliers={suppliers}
+                onUpdate={handleUpdateSupplier}
+              />
+            </RoleProtectedRoute>
           }
         />
 
-
-
         <Route path="settings" element={<Settings />} />
+
+        <Route path="purchase-orders" element={
+          <ProtectedRoute allowedRoles={["admin", "manager", "supplier"]}>
+            <PurchaseOrders/>
+          </ProtectedRoute>
+        } />
+
+        <Route path="purchase-order/:orderId" element={
+          <ProtectedRoute allowedRoles={["admin", "manager", "supplier"]}>
+            <PurchaseOrdersDetail/>
+          </ProtectedRoute>
+        } />
 
 
         <Route path="*" element={<div>Página não encontrada</div>} />
