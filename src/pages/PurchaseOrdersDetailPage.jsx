@@ -447,11 +447,13 @@ export default function PurchaseOrderDetails() {
                             className="flex-1 bg-gray-700 text-white rounded px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500"
                         >
                             <option value="">Select a product to add</option>
-                            {availableProducts.map(invProduct => (
-                                <option key={invProduct.productId} value={invProduct.productId}>
-                                    {invProduct.name} ({invProduct.sku})
-                                </option>
-                            ))}
+                            {availableProducts
+                                .filter(invProduct => invProduct.inStock > 0)
+                                .map(invProduct => (
+                                    <option key={invProduct.productId} value={invProduct.productId}>
+                                        {invProduct.name} ({invProduct.sku})
+                                    </option>
+                                ))}
                         </select>
                         <button
                             onClick={handleAddProduct}
