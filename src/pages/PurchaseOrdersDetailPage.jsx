@@ -1,18 +1,28 @@
-import React, { use, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import DeleteIcon from "../components/DeleteIcon";
+import SuccessModal from "../components/SuccessModal";
+
+const STATUS_CANCELLED = "Cancelled";
 
 function PurchaseOrderHeader({ order }) {
     if (!order) return null;
 
     const steps = ["Pending", "Approved", "Transit", "Delivered"];
     const currentStepIndex = steps.indexOf(order.status);
+    const isCancelled = order.status === STATUS_CANCELLED; // if created in setps gonna be added on progress bar
 
     const statusColor = {
         Pending: "bg-yellow-500",
         Approved: "bg-blue-500",
         Transit: "bg-aqua-500",
         Delivered: "bg-green-500",
+        Cancelled: "bg-red-500"
     };
+
+    const progressWidth = isCancelled ? "100%" : `${(currentStepIndex / (steps.length - 1)) * 100}%`;
+    const progressBarColor = isCancelled ? "bg-red-600" : "bg-teal-500";
+
 
     return (
         <>
@@ -71,40 +81,46 @@ function PurchaseOrderHeader({ order }) {
                 <div className="mt-10">
                     <p className="text-gray-300 mb-4 font-medium">Status Progress</p>
 
-                    <div className="relative w-full flex items-center justify-between">
+                    {isCancelled ? (
+                        <div className="w-full text-center p-3 rounded-lg bg-red-900/50 border border-red-600 text-red-300 font-semibold flex items-center justify-center gap-2">
+                            Order Cancelled
+                        </div>
+                    ) : (
+                        <div className="relative w-full flex items-center justify-between">
 
-                        <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-700 rounded-full"></div>
+                            <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-700 rounded-full"></div>
 
-                        <div
-                            className="absolute top-1/2 left-0 h-1 bg-teal-500 rounded-full transition-all duration-300"
-                            style={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}
-                        ></div>
+                            <div
+                                className={`absolute top-1/2 left-0 h-1 rounded-full transition-all duration-300 ${progressBarColor}`}
+                                style={{ width: progressWidth }}
+                            ></div>
 
-                        {steps.map((step, index) => {
-                            const active = index <= currentStepIndex;
+                            {steps.map((step, index) => {
+                                const active = index <= currentStepIndex;
 
-                            return (
-                                <div
-                                    key={step}
-                                    className="relative flex flex-col items-center z-10 w-1/3"
-                                >
+                                return (
                                     <div
-                                        className={`w-6 h-6 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${active
-                                            ? "border-teal-500 bg-teal-500"
-                                            : "border-gray-500 bg-gray-900"
-                                            }`}
-                                    ></div>
-
-                                    <span
-                                        className={`mt-2 text-sm font-medium ${active ? "text-white" : "text-gray-500"
-                                            }`}
+                                        key={step}
+                                        className="relative flex flex-col items-center z-10 w-1/3"
                                     >
-                                        {step}
-                                    </span>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                        <div
+                                            className={`w-6 h-6 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${active
+                                                ? "border-teal-500 bg-teal-500"
+                                                : "border-gray-500 bg-gray-900"
+                                                }`}
+                                        ></div>
+
+                                        <span
+                                            className={`mt-2 text-sm font-medium ${active ? "text-white" : "text-gray-500"
+                                                }`}
+                                        >
+                                            {step}
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
 
             </div>
@@ -112,33 +128,23 @@ function PurchaseOrderHeader({ order }) {
     );
 }
 
-const DeleteIcon = () => (
-    <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ cursor: 'pointer' }}
-    >
-        <path
-            d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM19 4H15.5L14.5 3H9.5L8.5 4H5V6H19V4Z"
-            fill="currentColor"
-        />
-    </svg>
-);
-
-
 export default function PurchaseOrderDetails() {
     const [products, setProducts] = useState([]);
     const [order, setOrder] = useState({});
     const [isSaving, setIsSaving] = useState(false);
     const [saveError, setSaveError] = useState(null);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
     const { orderId } = useParams();
 
     const [allProducts, setAllProducts] = useState([]);
 
     const [productToAdd, setProductToAdd] = useState("");
+
+    const handleSuccess = (message) => {
+        setModalMessage(message);
+        setShowSuccessModal(true);
+    }
 
     useEffect(() => {
         const loadInitialData = async () => {
@@ -207,15 +213,17 @@ export default function PurchaseOrderDetails() {
         );
     };
 
-    const handleSaveChanges = async () => {
+    const handleSaveChanges = async (customPayload = {}, successMessage) => {
         setIsSaving(true);
         setSaveError(null);
 
         const newTotal = products.reduce((acc, p) => acc + (p.subtotal || 0), 0);
 
         const payload = {
+            ...order,
             products: products,
-            total: newTotal
+            total: newTotal,
+            ...customPayload
         };
 
         try {
@@ -228,18 +236,31 @@ export default function PurchaseOrderDetails() {
             });
 
             if (!res.ok) {
-                throw new Error("Error");
+                throw new Error("Falha na requisição. Status: " + res.status);
             }
 
             const updatedOrder = await res.json();
             setOrder(updatedOrder);
 
+            if (successMessage) {
+                handleSuccess(successMessage);
+            }
+
         } catch (err) {
-            console.error("Error", err);
+            console.error("Error saving order:", err);
             setSaveError(err.message);
         } finally {
             setIsSaving(false);
         }
+    };
+
+    const handleSaveProducts = () => {
+        handleSaveChanges({}, "Purchase order products updated successfully!");
+    };
+
+    const cancelOrder = () => {
+        const cancelPayload = { status: STATUS_CANCELLED };
+        handleSaveChanges(cancelPayload, "Purchase order cancelled successfully!");
     };
 
 
@@ -285,8 +306,6 @@ export default function PurchaseOrderDetails() {
         setOrder(o => ({ ...o, total: totalOrder }));
     }, [totalOrder]);
 
-    console.log(products)
-
     return (
         <>
             <div className="max-w-7xl mx-auto py-1">
@@ -298,16 +317,33 @@ export default function PurchaseOrderDetails() {
                     <h2 className="text-2xl font-extrabold text-white mt-1">
                         Products
                     </h2>
-                    {order.status == "Pending" && (
-                        <button
-                            onClick={handleSaveChanges}
-                            disabled={isSaving}
-                            className="bg-green-600 hover:bg-green-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {isSaving ? 'saving...' : 'Save'}
-                        </button>
-                    )}
+                    <div className="flex justify-between items-center mb-6 mt-5 gap-4">
+                        {order.status === "Pending" && (
+                            <>
+                                <button
+                                    onClick={cancelOrder}
+                                    disabled={isSaving}
+                                    className="bg-red-600 hover:bg-red-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >Cancel Order</button>
+                                <button
+                                    onClick={handleSaveProducts}
+                                    disabled={isSaving}
+                                    className="bg-green-600 hover:bg-green-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isSaving ? 'Saving...' : 'Save'}
+                                </button>
+                            </>
+                        )}
+                    </div>
                 </div>
+
+                {showSuccessModal && (
+                    <SuccessModal
+                        message={modalMessage}
+                        onClose={() => setShowSuccessModal(false)}
+                    />
+                )}
+
 
                 <div className="bg-gray-900/50 shadow-xl rounded-xl overflow-hidden border border-gray-700">
                     <table className="min-w-full text-left">
@@ -319,7 +355,7 @@ export default function PurchaseOrderDetails() {
                                 <th className="px-6 py-3">Qty</th>
                                 <th className="px-6 py-3">Unit Price</th>
                                 <th className="px-6 py-3">Sub Total</th>
-                                {order.status == "Pending" && (
+                                {order.status === "Pending" && (
                                     <th className="px-4 py-3 text-center">Actions</th>
                                 )}
                             </tr>
@@ -341,7 +377,7 @@ export default function PurchaseOrderDetails() {
                                         {product.brand}
                                     </td>
 
-                                    {order.status == "Pending" ? (
+                                    {order.status === "Pending" ? (
                                         <>
                                             <td className="px-6 py-4 text-gray-300">
                                                 <input
@@ -388,7 +424,7 @@ export default function PurchaseOrderDetails() {
                                         ${(product.subtotal || 0).toFixed(2)}
                                     </td>
 
-                                    {order.status == "Pending" && (
+                                    {order.status === "Pending" && (
                                         <td className="px-4 py-4 text-center">
                                             <button
                                                 onClick={() => handleRemoveProduct(product.productSku)}

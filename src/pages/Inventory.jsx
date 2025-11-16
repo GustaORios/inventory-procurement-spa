@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
+import EditIcon from '../components/EditIcon';
+import DeleteIcon from '../components/DeleteIcon';
 
 function ConfirmationModal({ isOpen, onClose, onConfirm, productName }) {
     if (!isOpen) return null;
@@ -33,29 +35,6 @@ function ConfirmationModal({ isOpen, onClose, onConfirm, productName }) {
         </div>
     );
 }
-
-const DeleteIcon = () => (
-    <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ cursor: 'pointer' }}
-    >
-        <path
-            d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM19 4H15.5L14.5 3H9.5L8.5 4H5V6H19V4Z"
-            fill="currentColor"
-        />
-    </svg>
-);
-
-const EditIcon = () => (
-
-    <svg width="24" height="24" viewBox="0 0 24 24" >
-        <path d="M3 17.25V21h3.75L18.06 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-    </svg>
-);
 
 
 function InventoryTable({ products, selectedProductIds, setselectedProductIds, openDeleteModal }) {
@@ -169,7 +148,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                                                 title="Edit"
                                                 className="text-gray-400 hover:text-blue-400 transition-colors"
                                             >
-                                                <EditIcon />
+                                                <EditIcon/>
                                             </Link>
 
                                             <button
@@ -177,7 +156,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                                                 title="Delete"
                                                 className="text-gray-400 hover:text-red-500 transition-colors"
                                             >
-                                                <DeleteIcon />
+                                                <DeleteIcon/>
                                             </button>
                                         </div>
 

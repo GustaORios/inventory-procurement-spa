@@ -1,57 +1,85 @@
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
+import { 
+    CubeIcon, 
+    UsersIcon, 
+    ReceiptPercentIcon,
+    Cog6ToothIcon 
+} from '@heroicons/react/24/solid';
+
+const sidebarTheme = {
+  bg: "bg-gray-900",
+  border: "border-gray-700",
+  text: "text-gray-300",
+  accent: "text-teal-500",
+  hoverBg: "hover:bg-gray-800",
+  activeBg: "bg-gray-800 border-l-4 border-teal-500",
+  activeText: "text-white font-semibold",
+};
 
 const menuItems = [
- /* { name: 'Dashboard', path: '/dashboard', icon: '📊', role: ['manager', 'admin'] },*/
-  { name: 'Inventory', path: '/inventory', icon: '📦', role: ['picker', 'manager', 'admin'] },
-  { name: "Suppliers", path: "/suppliers", icon: '👥', role: ['manager', 'admin'] },
-  { name: "Purchase Orders", path: "/purchase-orders", icon: '🧾', role: ['supplier', 'manager', 'admin', 'picker'] },
-  { name: 'Settings', path: '/settings', icon: '⚙️', role: ['supplier', 'manager', 'admin', 'picker']  }
+  // Ícones uniformizados para componentes Heroicons
+  { name: 'Inventory', path: '/inventory', icon: CubeIcon, role: ['picker', 'manager', 'admin'] },
+  { name: "Suppliers", path: "/suppliers", icon: UsersIcon, role: ['manager', 'admin'] },
+  { name: "Purchase Orders", path: "/purchase-orders", icon: ReceiptPercentIcon, role: ['supplier', 'manager', 'admin', 'picker'] },
+  { name: 'Settings', path: '/settings', icon: Cog6ToothIcon, role: ['supplier', 'manager', 'admin', 'picker']  }
 ];
 
 export default function Sidebar() {
   const { user, logout } = useContext(UserContext);
-  const activeClass = "bg-accent text-white font-semibold";
-  const inactiveClass = "hover:bg-gray-700";
+  
+  const activeClass = `${sidebarTheme.activeBg} ${sidebarTheme.activeText}`;
+  const inactiveClass = `${sidebarTheme.hoverBg} ${sidebarTheme.text} border-l-4 border-transparent`;
 
   if (!user) return null;
 
   return (
     
-    <aside className="w-60 bg-primary flex flex-col p-4 shadow-lg border-r-[1px] border-r-[#374151]" >
-      <div className="flex items-center gap-3 mb-8 p-2">
-        <div className="w-10 h-10 bg-gray-700 border-2 border-accent rounded-full flex items-center justify-center">
-          <span className="font-bold text-accent text-lg">N</span>
+    <aside className={`w-60 flex flex-col p-4 shadow-2xl ${sidebarTheme.bg} ${sidebarTheme.border} border-r`}>
+      
+      <div className="flex items-center gap-3 mb-10 p-2">
+        <div className={`w-10 h-10 ${sidebarTheme.bg} rounded-full flex items-center justify-center border-2 border-teal-500`}>
+          <span className={`font-extrabold ${sidebarTheme.accent} text-xl`}>NT</span>
         </div>
-        <span className="text-white font-bold text-xl">NTG</span>
+        <span className="text-white font-extrabold text-2xl">NTG</span>
       </div>
 
-      <nav className="flex flex-col gap-2">
+      <nav className="flex flex-col gap-1">
         {menuItems
           .filter(item => item.role.includes(user.role))
-          .map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${isActive ? activeClass : inactiveClass
-                }`
-              }
-            >
-              {item.icon} {item.name}
-            </NavLink>
-          ))}
+          .map((item) => {
+            const IconComponent = item.icon;
+            
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) =>
+                  `flex items-center gap-4 px-3 py-2 rounded-md transition-all text-sm ${
+                    isActive 
+                    ? activeClass 
+                    : inactiveClass
+                  }`
+                }
+              >
+                <IconComponent className="w-5 h-5" /> 
+                <span>{item.name}</span>
+              </NavLink>
+            );
+          })}
       </nav>
 
-      <div className="flex flex-col gap-2 border-t border-gray-700 pt-4 mt-auto">
-        <p className="text-gray-200">
-          {user.username} ({user.role})
-        </p>
+      <div className="flex flex-col gap-3 border-t border-gray-700 pt-6 mt-auto">
+        
+        <div className="px-2">
+          <p className="text-white font-semibold">{user.username}</p>
+          <p className="text-gray-400 text-xs mt-0.5 capitalize">Role: {user.role}</p>
+        </div>
 
         <button
           onClick={logout}
-          className="bg-red-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-400 transition mt-2"
+          className="bg-red-700 text-white font-semibold text-sm px-4 py-2 rounded-lg hover:bg-red-600 transition-colors shadow-lg"
         >
           Logout
         </button>

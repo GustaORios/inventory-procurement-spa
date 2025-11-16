@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-
-
 export default function PurchaseOrders() {
   const [orders, setPurchaseOrders] = useState([]);
 
@@ -42,6 +40,7 @@ export default function PurchaseOrders() {
         Approved: "bg-blue-500",
         Transit: "bg-aqua-500",
         Delivered: "bg-green-500",
+        Cancelled: "bg-red-500"
     };
 
     return <span className={`${base} ${colors[status] || "bg-gray-600"}`}>{status}</span>;
@@ -179,14 +178,6 @@ const ViewIcon = (props) => {
                         >
                           <ViewIcon  className="search-icon" style={{ width: '20px', height: '20px' }}/>
                         </Link>
-
-                        {order.status !== "delivered" && (
-                          <button
-                            onClick={() => onAdvanceStatus(order.id)}
-                            className="text-gray-400 hover:text-teal-400 transition-colors"
-                          >
-                          </button>
-                        )}
                       </div>
                     </td>
                   </tr>
