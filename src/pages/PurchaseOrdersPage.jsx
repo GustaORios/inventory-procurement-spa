@@ -23,8 +23,9 @@ export default function PurchaseOrders() {
   const [filterStatus, setFilterStatus] = useState("");
 
   const filteredOrders = orders.filter((order) => {
-    const matchesSearch =
-    searchTerm === "" || order.id === Number(searchTerm);
+    const matchesSearch = order.id
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
 
     const matchesStatus =
       filterStatus === "" || order.status.toLowerCase() === filterStatus.toLowerCase();
@@ -43,7 +44,7 @@ export default function PurchaseOrders() {
         Delivered: "bg-green-500",
     };
 
-    return <span className={`${base} ${colors[status] || "bg-gray-600"}`}>{status.toUpperCase()}</span>;
+    return <span className={`${base} ${colors[status] || "bg-gray-600"}`}>{status}</span>;
   };
 
 const ViewIcon = (props) => {
@@ -102,7 +103,7 @@ const ViewIcon = (props) => {
           </div>
 
           <Link
-            to="/purchase-order/create"
+            to="/purchase-order/add"
             className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold
                     hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50 transform hover:scale-[1.01]"
           >
