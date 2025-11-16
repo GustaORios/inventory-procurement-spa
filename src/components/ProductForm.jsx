@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function ProductForm({ title, initialData, onSave }) {
@@ -15,9 +15,11 @@ export default function ProductForm({ title, initialData, onSave }) {
     inStock: '',
     location: '',
     expirationDate: '',
+    supplierName: '', 
   };
 
   const [formData, setFormData] = useState(initialData || defaultState);
+  const [suppliers, setSuppliers] = useState([]);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -41,22 +43,18 @@ export default function ProductForm({ title, initialData, onSave }) {
   const validateForm = () => {
     let newErrors = {};
 
-
     if (!formData.name.trim()) newErrors.name = "Name is required.";
     if (!formData.sku.trim()) newErrors.sku = "SKU is required.";
     if (!formData.category.trim()) newErrors.category = "Category is required.";
     if (!formData.brand.trim()) newErrors.brand = "Brand is required.";
 
-
     const priceValue = parseFloat(formData.price);
     if (!formData.price || isNaN(priceValue) || priceValue <= 0)
       newErrors.price = "Price is required and must be greater than zero.";
 
-
     const stockValue = parseInt(formData.inStock);
     if (!formData.inStock || isNaN(stockValue) || stockValue < 0)
       newErrors.inStock = "Stock is required and must be a valid number";
-
 
     if (!formData.location.trim()) newErrors.location = "Location is required.";
 
@@ -85,10 +83,30 @@ export default function ProductForm({ title, initialData, onSave }) {
     errors[fieldName] ? 'border-red-500' : 'border-gray-700';
 
   const RequiredAsterisk = ({ fieldName }) => {
-
     const isRequired = ['name', 'sku', 'category', 'brand', 'price', 'inStock', 'location'].includes(fieldName);
     return isRequired ? <span className="text-red-500">*</span> : null;
   };
+
+  // get all suppliers to fill dropdown
+  const didFetch = useRef(false);
+
+  useEffect(() => {
+    if (didFetch.current) return;
+    didFetch.current = true;
+
+    fetch('/suppliers')
+      .then((response) => response.json())
+      .then((data) => {
+        setSuppliers(data);
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching suppliers:", error);
+      });
+  }, []);
+
+
+
 
   return (
     <div className="max-w-5xl mx-auto py-10">
@@ -245,8 +263,25 @@ export default function ProductForm({ title, initialData, onSave }) {
             />
           </div>
 
-          { }
-          <div></div>
+          
+          <div>
+            <label htmlFor="supplierName" className="block text-sm font-medium text-gray-300 mb-1">
+              Supplier
+            </label>
+            <select
+              id="supplierName"
+              name="supplierName"
+              value={formData.supplierName}
+              onChange={handleChange}
+              className={`w-full bg-gray-800 border ${inputErrorClass('supplier')} rounded-lg p-3 text-white placeholder-gray-500 focus:ring-teal-500 focus:border-teal-500 shadow-inner`}
+            >
+              <option value="">Select a Supplier</option>
+              {
+                suppliers.map(s => <option key={s.id} value={s.name}>{s.name}</option>)
+              }
+            </select>
+            {errors.supplierName && <span className="text-xs text-red-500 mt-1">{errors.supplierName}</span>}
+          </div>
 
         </div>
 
