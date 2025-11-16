@@ -220,13 +220,33 @@
       "supplierName": "Global Trade Supplies Ltd.",
       "deliveryDate": "2025-11-19",
       "createdAt": "2025-11-16",
-      "status": "Pending",
+      "status": "Cancelled",
       "products": [
         {
           "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d25ef",
           "productSku": "COF-ARC-1KG",
           "productName": "Organic Arabica Coffee Beans 1kg",
           "brand": "ArabicaCo",
+          "quantity": 1,
+          "unitPrice": 20,
+          "subtotal": 20
+        }
+      ],
+      "total": 20
+    },
+    {
+      "id": "1763328598539",
+      "supplierId": "b19cfd43-4f25-4bb8-8e1a-29b0dc8cb6c2",
+      "supplierName": "Pacific Logistics Co.",
+      "deliveryDate": "2025-11-18",
+      "createdAt": "2025-11-16",
+      "status": "Cancelled",
+      "products": [
+        {
+          "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d123",
+          "productSku": "COF-CAD-500G",
+          "productName": "Organic Canadian Coffee Beans 1kg",
+          "brand": "Tim Hortons",
           "quantity": 1,
           "unitPrice": 20,
           "subtotal": 20

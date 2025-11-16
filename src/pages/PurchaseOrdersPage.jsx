@@ -43,6 +43,7 @@ export default function PurchaseOrders() {
         Approved: "bg-blue-500",
         Transit: "bg-aqua-500",
         Delivered: "bg-green-500",
+        Cancelled: "bg-red-500"
     };
 
     return <span className={`${base} ${colors[status] || "bg-gray-600"}`}>{status}</span>;

@@ -13,6 +13,7 @@ function PurchaseOrderHeader({ order }) {
         Approved: "bg-blue-500",
         Transit: "bg-aqua-500",
         Delivered: "bg-green-500",
+        Cancelled: "bg-red-500"
     };
 
     return (
@@ -191,6 +192,31 @@ export default function PurchaseOrderDetails() {
         );
     };
 
+    const cancelOrder = async () => {
+        const payload = {
+            status: "Cancelled"
+        };
+
+        try {
+            const res = await fetch(`/purchase-orders/${orderId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!res.ok) {
+                throw new Error("Error");
+            }
+
+        } catch (err) {
+            console.error("Error", err);
+        } finally {
+            setIsSaving(false);
+        };
+    }
+
     const handleSaveChanges = async () => {
         setIsSaving(true);
         setSaveError(null);
@@ -282,15 +308,24 @@ export default function PurchaseOrderDetails() {
                     <h2 className="text-2xl font-extrabold text-white mt-1">
                         Products
                     </h2>
-                    {order.status == "Pending" && (
-                        <button
-                            onClick={handleSaveChanges}
-                            disabled={isSaving}
-                            className="bg-green-600 hover:bg-green-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {isSaving ? 'saving...' : 'Save'}
-                        </button>
-                    )}
+                    <div className="flex justify-between items-center mb-6 mt-5 gap-4">
+                        {order.status == "Pending" && (
+                            <>
+                                <button
+                                    onClick={cancelOrder}
+                                    disabled={isSaving}
+                                    className="bg-red-600 hover:bg-red-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >Cancel Order</button>
+                                <button
+                                    onClick={handleSaveChanges}
+                                    disabled={isSaving}
+                                    className="bg-green-600 hover:bg-green-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isSaving ? 'saving...' : 'Save'}
+                                </button>
+                            </>
+                        )}
+                    </div>
                 </div>
 
                 <div className="bg-gray-900/50 shadow-xl rounded-xl overflow-hidden border border-gray-700">
@@ -379,7 +414,7 @@ export default function PurchaseOrderDetails() {
                                                 className="text-red-400 hover:text-red-300 transition-colors p-1 rounded-full hover:bg-red-900/50"
                                                 title="Remove product"
                                             >
-                                                <DeleteIcon/>
+                                                <DeleteIcon />
                                             </button>
                                         </td>
                                     )}
