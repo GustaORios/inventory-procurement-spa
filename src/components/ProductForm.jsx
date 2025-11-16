@@ -15,6 +15,7 @@ export default function ProductForm({ title, initialData, onSave }) {
     inStock: '',
     location: '',
     expirationDate: '',
+    supplier: '', 
   };
 
   const [formData, setFormData] = useState(initialData || defaultState);
@@ -41,22 +42,18 @@ export default function ProductForm({ title, initialData, onSave }) {
   const validateForm = () => {
     let newErrors = {};
 
-
     if (!formData.name.trim()) newErrors.name = "Name is required.";
     if (!formData.sku.trim()) newErrors.sku = "SKU is required.";
     if (!formData.category.trim()) newErrors.category = "Category is required.";
     if (!formData.brand.trim()) newErrors.brand = "Brand is required.";
 
-
     const priceValue = parseFloat(formData.price);
     if (!formData.price || isNaN(priceValue) || priceValue <= 0)
       newErrors.price = "Price is required and must be greater than zero.";
 
-
     const stockValue = parseInt(formData.inStock);
     if (!formData.inStock || isNaN(stockValue) || stockValue < 0)
       newErrors.inStock = "Stock is required and must be a valid number";
-
 
     if (!formData.location.trim()) newErrors.location = "Location is required.";
 
@@ -85,7 +82,6 @@ export default function ProductForm({ title, initialData, onSave }) {
     errors[fieldName] ? 'border-red-500' : 'border-gray-700';
 
   const RequiredAsterisk = ({ fieldName }) => {
-
     const isRequired = ['name', 'sku', 'category', 'brand', 'price', 'inStock', 'location'].includes(fieldName);
     return isRequired ? <span className="text-red-500">*</span> : null;
   };
@@ -245,8 +241,25 @@ export default function ProductForm({ title, initialData, onSave }) {
             />
           </div>
 
-          { }
-          <div></div>
+          
+          <div>
+            <label htmlFor="supplier" className="block text-sm font-medium text-gray-300 mb-1">
+              Supplier
+            </label>
+            <select
+              id="supplier"
+              name="supplier"
+              value={formData.supplier}
+              onChange={handleChange}
+              className={`w-full bg-gray-800 border ${inputErrorClass('supplier')} rounded-lg p-3 text-white placeholder-gray-500 focus:ring-teal-500 focus:border-teal-500 shadow-inner`}
+            >
+              <option value="">Select a Supplier</option>
+              {/* 
+                suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)
+              */}
+            </select>
+            {errors.supplier && <span className="text-xs text-red-500 mt-1">{errors.supplier}</span>}
+          </div>
 
         </div>
 
