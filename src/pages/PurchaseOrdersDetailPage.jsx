@@ -1,6 +1,118 @@
 import React, { use, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
+function PurchaseOrderHeader({ order }) {
+    if (!order) return null;
+
+    const steps = ["Pending", "Approved", "Transit", "Delivered"];
+    const currentStepIndex = steps.indexOf(order.status);
+
+    const statusColor = {
+        Pending: "bg-yellow-500",
+        Approved: "bg-blue-500",
+        Transit: "bg-aqua-500",
+        Delivered: "bg-green-500",
+    };
+
+    return (
+        <>
+            <div className="mb-6">
+                <span className="text-sm text-gray-400">
+                    Purchase Orders / #{order.id}
+                </span>
+
+                <h1 className="text-3xl font-extrabold text-white mt-1">
+                    Purchase Order #{order.id}
+                </h1>
+
+                <p className="text-gray-400 mt-1">
+                    Review details, items and delivery status.
+                </p>
+            </div>
+
+            <div className="bg-gray-900/50 p-8 rounded-xl shadow-2xl border border-gray-700">
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div>
+                        <p className="text-gray-400 text-sm">Supplier</p>
+                        <p className="text-white font-semibold">{order.supplierName}</p>
+                    </div>
+
+                    <div>
+                        <p className="text-gray-400 text-sm">Total Amount</p>
+                        <p className="text-white font-semibold">${order.total}</p>
+                    </div>
+
+                    <div>
+                        <p className="text-gray-400 text-sm">Delivery Date</p>
+                        <p className="text-white font-semibold">
+                            {new Date(order.deliveryDate).toLocaleDateString()}
+                        </p>
+                    </div>
+
+                    <div>
+                        <p className="text-gray-400 text-sm">Created At</p>
+                        <p className="text-white font-semibold">
+                            {new Date(order.createdAt).toLocaleDateString()}
+                        </p>
+                    </div>
+
+                    <div>
+                        <p className="text-gray-400 text-sm">Status</p>
+                        <span
+                            className={`px-3 py-1 rounded-full text-sm font-medium ${statusColor[order.status]}`}
+                        >
+                            {order.status}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Status Progress */}
+                <div className="mt-10">
+                    <p className="text-gray-300 mb-4 font-medium">Status Progress</p>
+
+                    <div className="relative w-full flex items-center justify-between">
+
+                        <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-700 rounded-full"></div>
+
+                        <div
+                            className="absolute top-1/2 left-0 h-1 bg-teal-500 rounded-full transition-all duration-300"
+                            style={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}
+                        ></div>
+
+                        {steps.map((step, index) => {
+                            const active = index <= currentStepIndex;
+
+                            return (
+                                <div
+                                    key={step}
+                                    className="relative flex flex-col items-center z-10 w-1/3"
+                                >
+                                    <div
+                                        className={`w-6 h-6 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${active
+                                            ? "border-teal-500 bg-teal-500"
+                                            : "border-gray-500 bg-gray-900"
+                                            }`}
+                                    ></div>
+
+                                    <span
+                                        className={`mt-2 text-sm font-medium ${active ? "text-white" : "text-gray-500"
+                                            }`}
+                                    >
+                                        {step}
+                                    </span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+            </div>
+        </>
+    );
+}
+
+
 export default function PurchaseOrderDetails() {
     const [products, setProducts] = useState([]);
     const [order, setOrder] = useState({});
@@ -58,15 +170,17 @@ export default function PurchaseOrderDetails() {
 
     return (
         <>
-            <div className="max-w-7xl mx-auto py-10">
+            <div className="max-w-7xl mx-auto py-1">
+                <PurchaseOrderHeader order={order} />
 
-                <h1 className="text-3xl font-extrabold text-white mb-6">
-                    Purchase Order {orderId}
-                </h1>
-                <h2>
-                    Total {order.total}
-                </h2>
+                {/* Products it */}
 
+                <div className="mb-6 mt-5">
+                    <h2 className="text-2xl font-extrabold text-white mt-1">
+                        Products
+                    </h2>
+                </div>
+                
                 <div className="bg-gray-900/50 shadow-xl rounded-xl overflow-hidden border border-gray-700">
                     <table className="min-w-full text-left">
                         <thead className="bg-gray-800 uppercase text-xs text-gray-400 font-medium tracking-wider">
@@ -139,3 +253,5 @@ export default function PurchaseOrderDetails() {
     );
 
 }
+
+

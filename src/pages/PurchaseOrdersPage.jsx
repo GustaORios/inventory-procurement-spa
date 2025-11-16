@@ -23,9 +23,8 @@ export default function PurchaseOrders() {
   const [filterStatus, setFilterStatus] = useState("");
 
   const filteredOrders = orders.filter((order) => {
-    const matchesSearch = order.supplierName
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const matchesSearch =
+    searchTerm === "" || order.id === Number(searchTerm);
 
     const matchesStatus =
       filterStatus === "" || order.status.toLowerCase() === filterStatus.toLowerCase();
@@ -38,15 +37,33 @@ export default function PurchaseOrders() {
     const base = "px-3 py-1 text-xs font-semibold rounded-lg text-white";
 
     const colors = {
-      pending: "bg-yellow-600",
-      approved: "bg-blue-600",
-      ordered: "bg-purple-600",
-      delivered: "bg-green-600",
-      cancelled: "bg-red-600",
+        Pending: "bg-yellow-500",
+        Approved: "bg-blue-500",
+        Transit: "bg-aqua-500",
+        Delivered: "bg-green-500",
     };
 
     return <span className={`${base} ${colors[status] || "bg-gray-600"}`}>{status.toUpperCase()}</span>;
   };
+
+const ViewIcon = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      />
+    </svg>
+  );
+};
 
   return (
     <>
@@ -63,7 +80,7 @@ export default function PurchaseOrders() {
 
             <input
               type="text"
-              placeholder="Search Supplier..."
+              placeholder="Search Purchase Order..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 
@@ -105,7 +122,7 @@ export default function PurchaseOrders() {
                 <th className="px-6 py-3">Delivery Date</th>
                 <th className="px-6 py-3">Created Date</th>
                 <th className="px-6 py-3">Status</th>
-                <th className="px-6 py-3">Actions</th>
+                <th className="px-1 py-3">Actions</th>
               </tr>
             </thead>
 
@@ -159,7 +176,7 @@ export default function PurchaseOrders() {
                           to={`/purchase-order/${order.id}`}
                           className="text-gray-400 hover:text-blue-400 transition-colors"
                         >
-                          View
+                          <ViewIcon  className="search-icon" style={{ width: '20px', height: '20px' }}/>
                         </Link>
 
                         {order.status !== "delivered" && (
@@ -167,7 +184,6 @@ export default function PurchaseOrders() {
                             onClick={() => onAdvanceStatus(order.id)}
                             className="text-gray-400 hover:text-teal-400 transition-colors"
                           >
-                            Advance
                           </button>
                         )}
                       </div>
