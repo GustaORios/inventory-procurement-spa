@@ -4,11 +4,39 @@
       "id": "f53a",
       "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d25ef",
       "name": "Organic Arabica Coffee Beans 1kg",
-      "sku": "COF-ORG-1KG",
+      "sku": "COF-ARC-1KG",
       "category": "Beverages",
       "brand": "ArabicaCo",
-      "price": 19.99,
+      "price": 20,
       "inStock": "500",
+      "location": "Vancouver Warehouse A3",
+      "expirationDate": "2026-05-01",
+      "createdAt": "2024-09-12T14:45:00Z",
+      "updatedAt": "2025-03-03T09:21:15Z"
+    },
+    {
+      "id": "f53aaaa",
+      "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d244ef",
+      "name": "Organic Brazilian Coffee Beans 1kg",
+      "sku": "COF-BRA-1KG",
+      "category": "Beverages",
+      "brand": "Nescafe",
+      "price": 20,
+      "inStock": "100",
+      "location": "Vancouver Warehouse A3",
+      "expirationDate": "2026-05-01",
+      "createdAt": "2024-09-12T14:45:00Z",
+      "updatedAt": "2025-03-03T09:21:15Z"
+    },
+    {
+      "id": "f53ddda",
+      "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d123",
+      "name": "Organic Canadian Coffee Beans 1kg",
+      "sku": "COF-CAD-500G",
+      "category": "Beverages",
+      "brand": "Tim Hortons",
+      "price": 20,
+      "inStock": "250",
       "location": "Vancouver Warehouse A3",
       "expirationDate": "2026-05-01",
       "createdAt": "2024-09-12T14:45:00Z",
@@ -66,16 +94,76 @@
       "createdAt": "2025-11-13T08:01:12.943Z",
       "updatedAt": "2025-11-13T23:19:24.561Z",
       "status": "ACTIVE"
+    }
+  ],
+  "purchase-orders": [
+    {
+      "id": 1001,
+      "supplierId": "c4f8d8a1-8e9a-4f52-bf77-4c3d2e1c5a21",
+      "supplierName": "Global Trade Supplies Ltd.",
+      "products": [
+        {
+          "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d25ef",
+          "productSku": "COF-ARC-1KG",
+          "quantity": 20,
+          "unitPrice": 10,
+          "subtotal": 200
+        },
+        {
+          "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d244ef",
+          "productSku": "COF-BRA-1KG",
+          "quantity": 20,
+          "unitPrice": 10,
+          "subtotal": 200
+        },
+        {
+          "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d123",
+          "productSku": "COF-CAD-500G",
+          "quantity": 10,
+          "unitPrice": 5,
+          "subtotal": 50
+        }
+      ],
+      "total": 450,
+      "status": "Pending",
+      "deliveryDate": "2025-11-15",
+      "createdAt": "2025-11-10"
     },
     {
-      "id": "ebb739d7-1f05-41d5-aed5-34f71285efb1",
-      "name": "ASFAKDSJKD",
-      "email": "NELSON@GMAIL.COM",
-      "role": "packer",
-      "notes": "",
-      "status": "ACTIVE",
-      "createdAt": "2025-11-13T22:49:16.690Z",
-      "updatedAt": "2025-11-13T22:49:30.918Z"
+      "id": 1002,
+      "supplierId": "b19cfd43-4f25-4bb8-8e1a-29b0dc8cb6c2",
+      "supplierName": "Pacific Logistics Co.",
+      "products": [
+        {
+          "productId": "e49b94cb-7853-4b47-9b18-42a735b94f65",
+          "productSku": "CHO-DARK-100G",
+          "quantity": 150,
+          "unitPrice": 2.99,
+          "subtotal": 448.5
+        }
+      ],
+      "total": 448.5,
+      "status": "Approved",
+      "deliveryDate": "2025-11-15",
+      "createdAt": "2025-11-11"
+    },
+    {
+      "id": 1003,
+      "supplierId": "82c9ec48-6c03-41d6-849f-4570046f2767",
+      "supplierName": "pepe",
+      "products": [
+        {
+          "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d25ef",
+          "productSku": "COF-ARC-1KG",
+          "quantity": 5,
+          "unitPrice": 19.99,
+          "subtotal": 99.95
+        }
+      ],
+      "total": 99.95,
+      "status": "Delivered",
+      "deliveryDate": "2025-11-15",
+      "createdAt": "2025-11-12"
     }
   ]
 }
