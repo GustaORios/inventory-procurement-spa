@@ -1,5 +1,6 @@
 import React, { use, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import DeleteIcon from "../components/DeleteIcon";
 
 function PurchaseOrderHeader({ order }) {
     if (!order) return null;
@@ -111,23 +112,6 @@ function PurchaseOrderHeader({ order }) {
         </>
     );
 }
-
-const DeleteIcon = () => (
-    <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ cursor: 'pointer' }}
-    >
-        <path
-            d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM19 4H15.5L14.5 3H9.5L8.5 4H5V6H19V4Z"
-            fill="currentColor"
-        />
-    </svg>
-);
-
 
 export default function PurchaseOrderDetails() {
     const [products, setProducts] = useState([]);
@@ -395,7 +379,7 @@ export default function PurchaseOrderDetails() {
                                                 className="text-red-400 hover:text-red-300 transition-colors p-1 rounded-full hover:bg-red-900/50"
                                                 title="Remove product"
                                             >
-                                                <DeleteIcon />
+                                                <DeleteIcon/>
                                             </button>
                                         </td>
                                     )}

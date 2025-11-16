@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import DeleteIcon from "../components/DeleteIcon";
 
 
 
@@ -179,14 +180,6 @@ const ViewIcon = (props) => {
                         >
                           <ViewIcon  className="search-icon" style={{ width: '20px', height: '20px' }}/>
                         </Link>
-
-                        {order.status !== "delivered" && (
-                          <button
-                            onClick={() => onAdvanceStatus(order.id)}
-                            className="text-gray-400 hover:text-teal-400 transition-colors"
-                          >
-                          </button>
-                        )}
                       </div>
                     </td>
                   </tr>
