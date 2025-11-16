@@ -270,7 +270,7 @@ export default function App() {
           </ProtectedRoute>
         } />
 
-        <Route path="*" element={<div>Página não encontrada</div>} />
+        <Route path="*" element={<div>404 - Not found</div>} />
       </Route>
     </Routes>
   );

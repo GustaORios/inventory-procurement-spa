@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import DeleteIcon from "../components/DeleteIcon";
-
-
 
 export default function PurchaseOrders() {
   const [orders, setPurchaseOrders] = useState([]);

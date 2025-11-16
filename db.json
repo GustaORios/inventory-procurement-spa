@@ -171,27 +171,17 @@
           "inventoryPrice": 2.99
         },
         {
-          "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d244ef",
-          "productSku": "COF-BRA-1KG",
-          "productName": "Organic Brazilian Coffee Beans 1kg",
-          "brand": "Nescafe",
-          "quantity": 1,
-          "unitPrice": 20,
-          "subtotal": 20,
-          "inventoryPrice": 20
-        },
-        {
           "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d25ef",
           "productSku": "COF-ARC-1KG",
           "productName": "Organic Arabica Coffee Beans 1kg",
           "brand": "ArabicaCo",
-          "quantity": 10,
+          "quantity": 1,
           "unitPrice": 20,
-          "subtotal": 200,
+          "subtotal": 20,
           "inventoryPrice": 20
         }
       ],
-      "total": 668.5,
+      "total": 468.5,
       "status": "Pending",
       "deliveryDate": "2025-11-15",
       "createdAt": "2025-11-11"
