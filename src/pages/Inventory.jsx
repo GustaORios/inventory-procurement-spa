@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
@@ -90,7 +90,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                         <th scope="col" className="px-6 py-3">Product Name</th>
                         <th scope="col" className="px-6 py-3">Category</th>
                         <th scope="col" className="px-6 py-3">Brand</th>
-                        <th scope="col" className="px-6 py-3">Supplier</th> {/* // <-- NOVO CABEÇALHO */}
+                        <th scope="col" className="px-6 py-3">Supplier</th>
                         <th scope="col" className="px-4 py-3 text-right">Price</th>
                         <th scope="col" className="px-4 py-3 text-center">Stock</th>
                         <th scope="col" className="px-6 py-3">Location</th>
@@ -105,7 +105,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                 <tbody className="divide-y divide-gray-700">
                     {products.length === 0 ? (
                         <tr>
-                            <td colSpan="12" className="px-6 py-4 text-center text-gray-500"> {/* // <-- colSpan ATUALIZADO DE 11 PARA 12 */}
+                            <td colSpan="12" className="px-6 py-4 text-center text-gray-500">
                                 No products listed.
                             </td>
                         </tr>
@@ -116,8 +116,8 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                                 <td className="px-3 py-4">
                                     <input
                                         type="checkbox"
-                                        checked={selectedProductIds.includes(product.sku)}
-                                        onChange={() => handleSelect(product.sku)}
+                                        checked={selectedProductIds.includes(product.productId)}
+                                        onChange={() => handleSelect(product.productId)}
                                         className="h-4 w-4 text-teal-500 border-gray-600 rounded bg-gray-700 cursor-pointer focus:ring-teal-500"
                                     />
                                 </td>
@@ -125,7 +125,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                                 <td className="px-6 py-4 font-medium text-white">{product.name}</td>
                                 <td className="px-6 py-4 text-gray-300">{product.category}</td>
                                 <td className="px-6 py-4 text-gray-300">{product.brand}</td>
-                                <td className="px-6 py-4 text-gray-300">{product.supplier || 'N/A'}</td> {/* // <-- NOVO DADO */}
+                                <td className="px-6 py-4 text-gray-300">{product.supplierName || 'N/A'}</td>
                                 <td className="px-4 py-4 text-right text-teal-400 font-mono">
                                     ${parseFloat(product.price).toFixed(2)}
                                 </td>
@@ -137,7 +137,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                                     {product.expirationDate || 'N/A'}
                                 </td>
                                 <td className="px-6 py-4">{renderStatus(product.inStock)}</td>
-                                {user?.role != "supplier" && user?.role != "manager" &&(
+                                {user?.role != "supplier" && user?.role != "manager" && (
                                     <td className="px-6 py-4">
                                         <div className="flex gap-4 text-sm font-medium">
                                             <Link
@@ -179,12 +179,38 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
 
 export default function Inventory({ products, handleDeleteProduct }) {
     const { user } = useContext(UserContext);
-
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
     const [selectedProductIds, setselectedProductIds] = useState([]);
+    const [enrichedProducts, setEnrichedProducts] = useState([]);
 
+    const didFetch = useRef(false);
+
+    useEffect(() => {
+        if (didFetch.current) return;
+        didFetch.current = true;
+
+        const load = async () => {
+            try {
+                const resSuppliers = await fetch('/suppliers');
+                const suppliers = await resSuppliers.json();
+                const enriched = products.map((p) => {
+                    const supplier = suppliers.find((s) => s.id === p.supplierId);
+
+                    return {
+                        ...p,
+                        supplierName: supplier?.name || "Unknown",
+                    };
+                });
+                setEnrichedProducts(enriched);
+            } catch (err) {
+                console.error("Error fetching suppliers:", err);
+            }
+        };
+
+        load();
+    }, [products]);
 
     const [filterStatus, setFilterStatus] = useState('');
 
@@ -214,7 +240,7 @@ export default function Inventory({ products, handleDeleteProduct }) {
     };
 
 
-    const filteredProducts = products.filter(p => {
+    const filteredProducts = enrichedProducts.filter(p => {
 
         const matchesSearchTerm = p.name.toLowerCase().includes(searchTerm.toLowerCase());
 
@@ -252,7 +278,7 @@ export default function Inventory({ products, handleDeleteProduct }) {
                     </select>
                 </div>
 
-                {user?.role != "supplier"  && user?.role != "manager" &&(
+                {user?.role != "supplier" && user?.role != "manager" && (
                     <Link
                         to="/inventory/add"
                         className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50 transform hover:scale-[1.01]"
