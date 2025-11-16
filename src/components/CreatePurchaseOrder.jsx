@@ -1,68 +1,194 @@
-import { useState } from "react";
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export default function CreatePurchaseOrder({ onCreate }) {
-    const [form, setForm] = useState({
-        supplier: "",
-        product: "",
-        quantity: 0,
-        unitPrice: 0,
-        status: "Pending",
-    });
+export default function CreatePurchaseOrder({ title = "Create New Purchase Order" }) {
+  const navigate = useNavigate();
+  const [suppliers, setSuppliers] = useState([]);
+  const [errors, setErrors] = useState({});
+  const didFetch = useRef(false);
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+  const defaultState = {
+    supplierId: '',
+    supplierName: '',
+    deliveryDate: '',
+  };
+
+  const [formData, setFormData] = useState(defaultState);
+  
+  useEffect(() => {
+    if (didFetch.current) return;
+    didFetch.current = true;
+
+    fetch('/suppliers')
+      .then((response) => response.json())
+      .then((data) => {
+        setSuppliers(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching suppliers:", error);
+      });
+  }, []);
+
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    let newFormData = { ...formData, [name]: value };
+
+    if (name === 'supplierId' && value) {
+      const selectedSupplier = suppliers.find(s => s.id === value);
+      if (selectedSupplier) {
+        newFormData.supplierName = selectedSupplier.name;
+      } else {
+        newFormData.supplierName = '';
+      }
+    }
+    
+    setFormData(newFormData);
+
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: null }));
+    }
+  };
+
+  const validateForm = () => {
+    let newErrors = {};
+
+    if (!formData.supplierId.trim()) newErrors.supplierId = "Supplier is required.";
+    if (!formData.deliveryDate.trim()) newErrors.deliveryDate = "Delivery date is required.";
+
+    const today = new Date().toISOString().split('T')[0];
+    if (formData.deliveryDate.trim() && formData.deliveryDate < today) {
+        newErrors.deliveryDate = "Delivery date cannot be in the past."; 
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  function generateUniqueId() {
+    return Date.now().toString(); 
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      console.error("Validation failed", errors);
+      return;
+    }
+    
+    const finalData = {
+        supplierId: formData.supplierId,
+        supplierName: formData.supplierName,
+        deliveryDate: formData.deliveryDate,
+        
+        id: generateUniqueId(),
+        createdAt: new Date().toISOString().split('T')[0],
+        status: 'Pending', 
+        products: [],
+        total: 0,
     };
+    
+    await fetch('http://localhost:3000/purchase-orders', { method: 'POST', body: JSON.stringify(finalData) });
+    
+    navigate(`/purchase-order/${finalData.id}`); 
+  };
+  
+  const inputErrorClass = (fieldName) =>
+    errors[fieldName] ? 'border-red-500' : 'border-gray-700';
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const newOrder = {
-            ...form,
-            id: Date.now(),
-            total: form.quantity * form.unitPrice,
-        };
-        onCreate(newOrder);
-    };
+  const RequiredAsterisk = ({ fieldName }) => {
+    const isRequired = ['supplierId', 'deliveryDate'].includes(fieldName);
+    return isRequired ? <span className="text-red-500">*</span> : null;
+  };
 
-    return (
-        <div className="p-6 text-white">
-            <h2 className="text-2xl font-bold mb-4">Create Purchase Order</h2>
-            <form className="space-y-4" onSubmit={handleSubmit}>
-                <input
-                    name="supplier"
-                    placeholder="Supplier"
-                    className="w-full p-3 rounded bg-gray-800"
-                    value={form.supplier}
-                    onChange={handleChange}
-                />
+  return (
+    <div className="max-w-5xl mx-auto py-10">
+      <div className="mb-6">
+        <span className="text-sm text-gray-400">Purchase Orders / {title}</span>
+        <h1 className="text-3xl font-extrabold text-white mt-1">{title}</h1>
+        <p className="text-gray-400 mt-1">
+          Select the supplier and delivery date to create a new order.
+        </p>
+      </div>
 
-                <input
-                    name="product"
-                    placeholder="Product"
-                    className="w-full p-3 rounded bg-gray-800"
-                    value={form.product}
-                    onChange={handleChange}
-                />
+      <form
+        onSubmit={handleSubmit}
+        className="bg-gray-900/50 p-8 rounded-xl shadow-2xl border border-gray-700"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
 
-                <input
-                    type="number"
-                    name="quantity"
-                    placeholder="Quantity"
-                    className="w-full p-3 rounded bg-gray-800"
-                    value={form.quantity}
-                    onChange={handleChange}
-                />
+          <div>
+            <label htmlFor="supplierId" className="block text-sm font-medium text-gray-300 mb-1">
+              Supplier <RequiredAsterisk fieldName="supplierId" />
+            </label>
+            <select
+              id="supplierId"
+              name="supplierId"
+              value={formData.supplierId}
+              onChange={handleChange}
+              className={`w-full bg-gray-800 border ${inputErrorClass('supplierId')} rounded-lg p-3 text-white placeholder-gray-500 focus:ring-teal-500 focus:border-teal-500 shadow-inner`}
+            >
+              <option value="">Select a Supplier</option>
+              {
+                suppliers.map(s => (
+                    <option key={s.id} value={s.id}>
+                        {s.name}
+                    </option>
+                ))
+              }
+            </select>
+            {errors.supplierId && <span className="text-xs text-red-500 mt-1">{errors.supplierId}</span>}
+          </div>
 
-                <input
-                    type="number"
-                    name="unitPrice"
-                    placeholder="Unit Price"
-                    className="w-full p-3 rounded bg-gray-800"
-                    value={form.unitPrice}
-                    onChange={handleChange}
-                />
+          <div>
+            <label htmlFor="supplierName" className="block text-sm font-medium text-gray-300 mb-1">
+              Supplier Name
+            </label>
+            <input
+              type="text"
+              id="supplierName"
+              name="supplierName"
+              value={formData.supplierName}
+              readOnly
+              className={`w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-gray-400 cursor-not-allowed shadow-inner`}
+            />
+          </div>
 
-                <button className="bg-cyan-500 p-3 rounded text-black font-bold w-full">Create</button>
-            </form>
+          <div>
+            <label htmlFor="deliveryDate" className="block text-sm font-medium text-gray-300 mb-1">
+              Delivery Date <RequiredAsterisk fieldName="deliveryDate" />
+            </label>
+            <input
+              type="date"
+              id="deliveryDate"
+              name="deliveryDate"
+              value={formData.deliveryDate}
+              onChange={handleChange}
+              className={`w-full bg-gray-800 border ${inputErrorClass('deliveryDate')} rounded-lg p-3 text-white focus:ring-teal-500 focus:border-teal-500 shadow-inner`}
+              min={new Date().toISOString().split('T')[0]}
+            />
+            {errors.deliveryDate && <span className="text-xs text-red-500 mt-1">{errors.deliveryDate}</span>}
+          </div>
+
         </div>
-    );
+
+        {/* Botões de Ação */}
+        <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-gray-700">
+          <button
+            type="button"
+            onClick={() => navigate('/purchase-orders')}
+            className="px-6 py-3 rounded-lg bg-gray-600 text-white font-semibold hover:bg-gray-500 transition-colors shadow-md"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50"
+          >
+            Create Purchase Order
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }
