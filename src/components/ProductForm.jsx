@@ -15,7 +15,7 @@ export default function ProductForm({ title, initialData, onSave }) {
     inStock: '',
     location: '',
     expirationDate: '',
-    supplier: '', 
+    supplierName: '', 
   };
 
   const [formData, setFormData] = useState(initialData || defaultState);
@@ -265,22 +265,22 @@ export default function ProductForm({ title, initialData, onSave }) {
 
           
           <div>
-            <label htmlFor="supplier" className="block text-sm font-medium text-gray-300 mb-1">
+            <label htmlFor="supplierName" className="block text-sm font-medium text-gray-300 mb-1">
               Supplier
             </label>
             <select
-              id="supplier"
-              name="supplier"
-              value={formData.supplier}
+              id="supplierName"
+              name="supplierName"
+              value={formData.supplierName}
               onChange={handleChange}
               className={`w-full bg-gray-800 border ${inputErrorClass('supplier')} rounded-lg p-3 text-white placeholder-gray-500 focus:ring-teal-500 focus:border-teal-500 shadow-inner`}
             >
               <option value="">Select a Supplier</option>
               {
-                suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)
+                suppliers.map(s => <option key={s.id} value={s.name}>{s.name}</option>)
               }
             </select>
-            {errors.supplier && <span className="text-xs text-red-500 mt-1">{errors.supplier}</span>}
+            {errors.supplierName && <span className="text-xs text-red-500 mt-1">{errors.supplierName}</span>}
           </div>
 
         </div>

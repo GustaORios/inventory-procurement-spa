@@ -34,6 +34,30 @@ function ConfirmationModal({ isOpen, onClose, onConfirm, productName }) {
     );
 }
 
+const DeleteIcon = () => (
+    <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ cursor: 'pointer' }}
+    >
+        <path
+            d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM19 4H15.5L14.5 3H9.5L8.5 4H5V6H19V4Z"
+            fill="currentColor"
+        />
+    </svg>
+);
+
+const EditIcon = () => (
+
+    <svg width="24" height="24" viewBox="0 0 24 24" >
+        <path d="M3 17.25V21h3.75L18.06 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+    </svg>
+);
+
+
 function InventoryTable({ products, selectedProductIds, setselectedProductIds, openDeleteModal }) {
     const { user } = useContext(UserContext);
 
@@ -78,7 +102,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
             <table className="min-w-full text-left">
                 <thead className="bg-gray-800 uppercase text-xs text-gray-400 font-medium tracking-wider">
                     <tr>
-                        <th scope="col" className="px-3 py-3 w-10">
+                        <th scope="col" className="px-2 py-3 w-10">
                             <input
                                 type="checkbox"
                                 checked={selectedProductIds.length === products.length && products.length > 0}
@@ -86,18 +110,18 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                                 className="h-4 w-4 text-teal-500 border-gray-600 rounded bg-gray-700 cursor-pointer focus:ring-teal-500"
                             />
                         </th>
-                        <th scope="col" className="px-3 py-3">SKU</th>
-                        <th scope="col" className="px-6 py-3">Product Name</th>
-                        <th scope="col" className="px-6 py-3">Category</th>
-                        <th scope="col" className="px-6 py-3">Brand</th>
-                        <th scope="col" className="px-6 py-3">Supplier</th>
-                        <th scope="col" className="px-4 py-3 text-right">Price</th>
-                        <th scope="col" className="px-4 py-3 text-center">Stock</th>
-                        <th scope="col" className="px-6 py-3">Location</th>
-                        <th scope="col" className="px-6 py-3">Exp. Date</th>
-                        <th scope="col" className="px-6 py-3">Status</th>
+                        <th scope="col" className="px-1 py-3">SKU</th>
+                        <th scope="col" className="px-3 py-3">Product Name</th>
+                        <th scope="col" className="px-3 py-3">Category</th>
+                        <th scope="col" className="px-3 py-3">Brand</th>
+                        <th scope="col" className="px-4 py-3">Supplier</th>
+                        <th scope="col" className="px-5 py-3 text-right">Price</th>
+                        <th scope="col" className="px-2 py-3 text-center">Stock</th>
+                        <th scope="col" className="px-10 py-3">Location</th>
+                        <th scope="col" className="px-10 py-3">Exp. Date</th>
+                        <th scope="col" className="px-4 py-3">Status</th>
                         {user?.role != "supplier" && user?.role != "manager" && (
-                            <th scope="col" className="px-6 py-3">Actions</th>
+                            <th scope="col" className="px-1 py-2">Actions</th>
                         )}
                     </tr>
                 </thead>
@@ -113,7 +137,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                         products.map((product) => (
                             <tr key={product.productId} className="hover:bg-gray-800 transition-colors">
 
-                                <td className="px-3 py-4">
+                                <td className="px-2 py-4">
                                     <input
                                         type="checkbox"
                                         checked={selectedProductIds.includes(product.productId)}
@@ -121,15 +145,15 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                                         className="h-4 w-4 text-teal-500 border-gray-600 rounded bg-gray-700 cursor-pointer focus:ring-teal-500"
                                     />
                                 </td>
-                                <td className="px-3 py-4 text-gray-500 font-mono text-xs">{product.sku}</td>
-                                <td className="px-6 py-4 font-medium text-white">{product.name}</td>
-                                <td className="px-6 py-4 text-gray-300">{product.category}</td>
-                                <td className="px-6 py-4 text-gray-300">{product.brand}</td>
-                                <td className="px-6 py-4 text-gray-300">{product.supplierName || 'N/A'}</td>
-                                <td className="px-4 py-4 text-right text-teal-400 font-mono">
+                                <td className="px-1 py-4 text-gray-500 font-mono text-xs">{product.sku}</td>
+                                <td className="px-3 py-4 font-medium text-white">{product.name}</td>
+                                <td className="px-3 py-4 text-gray-300">{product.category}</td>
+                                <td className="px-3 py-4 text-gray-300">{product.brand}</td>
+                                <td className="px-4 py-4 text-gray-300">{product.supplierName || 'N/A'}</td>
+                                <td className="px-1 py-4 text-right text-teal-400 font-mono">
                                     ${parseFloat(product.price).toFixed(2)}
                                 </td>
-                                <td className="px-4 py-4 text-center text-white font-semibold">
+                                <td className="px-1 py-4 text-center text-white font-semibold">
                                     {product.inStock}
                                 </td>
                                 <td className="px-6 py-4 text-gray-400 text-sm">{product.location}</td>
@@ -139,22 +163,24 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                                 <td className="px-6 py-4">{renderStatus(product.inStock)}</td>
                                 {user?.role != "supplier" && user?.role != "manager" && (
                                     <td className="px-6 py-4">
-                                        <div className="flex gap-4 text-sm font-medium">
+                                        <div className="flex flex-col gap-3 text-sm font-medium">
                                             <Link
                                                 to={`/inventory/edit/${product.productId}`}
                                                 title="Edit"
                                                 className="text-gray-400 hover:text-blue-400 transition-colors"
                                             >
-                                                Edit
+                                                <EditIcon />
                                             </Link>
+
                                             <button
                                                 onClick={() => openDeleteModal(product)}
                                                 title="Delete"
                                                 className="text-gray-400 hover:text-red-500 transition-colors"
                                             >
-                                                Delete
+                                                <DeleteIcon />
                                             </button>
                                         </div>
+
                                     </td>)}
                             </tr>
                         ))
@@ -183,35 +209,6 @@ export default function Inventory({ products, handleDeleteProduct }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
     const [selectedProductIds, setselectedProductIds] = useState([]);
-    const [enrichedProducts, setEnrichedProducts] = useState([]);
-
-    const didFetch = useRef(false);
-
-    useEffect(() => {
-        if (didFetch.current) return;
-        didFetch.current = true;
-
-        const load = async () => {
-            try {
-                const resSuppliers = await fetch('/suppliers');
-                const suppliers = await resSuppliers.json();
-                const enriched = products.map((p) => {
-                    const supplier = suppliers.find((s) => s.id === p.supplierId);
-
-                    return {
-                        ...p,
-                        supplierName: supplier?.name || "Unknown",
-                    };
-                });
-                setEnrichedProducts(enriched);
-            } catch (err) {
-                console.error("Error fetching suppliers:", err);
-            }
-        };
-
-        load();
-    }, [products]);
-
     const [filterStatus, setFilterStatus] = useState('');
 
     const openDeleteModal = (product) => {
@@ -240,7 +237,7 @@ export default function Inventory({ products, handleDeleteProduct }) {
     };
 
 
-    const filteredProducts = enrichedProducts.filter(p => {
+    const filteredProducts = products.filter(p => {
 
         const matchesSearchTerm = p.name.toLowerCase().includes(searchTerm.toLowerCase());
 
