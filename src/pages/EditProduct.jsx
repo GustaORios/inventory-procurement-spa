@@ -31,12 +31,12 @@ export default function EditProduct({ onEdit, getProduct }) {
     }, [productId, getProduct, navigate]); 
 
     if (isLoading) {
-        return <div className="text-white text-center py-20">Carregando dados do produto...</div>;
+        return <div className="text-white text-center py-20">Loading product data...</div>;
     }
 
     if (!productData) {
         
-        return <div className="text-white text-center py-20">Produto não encontrado. Redirecionando...</div>;
+        return <div className="text-white text-center py-20">Product not found. Redirecting...</div>;
     }
 
     
