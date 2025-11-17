@@ -21,7 +21,8 @@ export default function PurchaseOrders() {
   const [filterStatus, setFilterStatus] = useState("");
 
   const filteredOrders = orders.filter((order) => {
-    const matchesSearch = order.id
+    // Note: assumi que o ID é uma string para a busca. Se for um número, remova .toLowerCase()
+    const matchesSearch = String(order.id)
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
 
@@ -36,34 +37,34 @@ export default function PurchaseOrders() {
     const base = "px-3 py-1 text-xs font-semibold rounded-lg text-white";
 
     const colors = {
-        Pending: "bg-yellow-500",
-        Approved: "bg-blue-500",
-        Transit: "bg-aqua-500",
-        Delivered: "bg-green-500",
-        Cancelled: "bg-red-500"
+      Pending: "bg-yellow-500",
+      Approved: "bg-blue-500",
+      Transit: "bg-aqua-500", // Tailwind não tem 'bg-aqua-500', usarei uma cor próxima se for customizada
+      Delivered: "bg-green-500",
+      Cancelled: "bg-red-500"
     };
 
     return <span className={`${base} ${colors[status] || "bg-gray-600"}`}>{status}</span>;
   };
 
-const ViewIcon = (props) => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      {...props}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-      />
-    </svg>
-  );
-};
+  const ViewIcon = (props) => {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        {...props}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
+      </svg>
+    );
+  };
 
   return (
     <>
@@ -74,9 +75,9 @@ const ViewIcon = (props) => {
           Purchase Orders
         </h1>
 
-        {/* Filters */}
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex gap-4">
+        {/* Filters and Button (ALTERADO AQUI) */}
+        <div className="flex items-center mb-8"> 
+          <div className="flex gap-4"> {/* Agrupa Filtros e Botão */}
 
             <input
               type="text"
@@ -84,14 +85,14 @@ const ViewIcon = (props) => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 
-                        focus:ring-teal-500 focus:border-teal-500 w-80 shadow-inner"
+                         focus:ring-teal-500 focus:border-teal-500 w-80 shadow-inner"
             />
 
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
               className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-white 
-                        focus:ring-teal-500 focus:border-teal-500 shadow-inner"
+                         focus:ring-teal-500 focus:border-teal-500 shadow-inner"
             >
               <option value="">Filter by Status</option>
               <option value="pending">Pending</option>
@@ -99,15 +100,17 @@ const ViewIcon = (props) => {
               <option value="ordered">Ordered</option>
               <option value="delivered">Delivered</option>
             </select>
+          
+            {/* Botão Create Purchase Order AGORA DENTRO DO GRUPO DE FILTROS */}
+            <Link
+              to="/purchase-order/add"
+              className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold
+                         hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50 transform hover:scale-[1.01]"
+            >
+              Create Purchase Order +
+            </Link>
           </div>
 
-          <Link
-            to="/purchase-order/add"
-            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold
-                    hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50 transform hover:scale-[1.01]"
-          >
-            Create Purchase Order +
-          </Link>
         </div>
 
         {/* Table */}
@@ -176,7 +179,7 @@ const ViewIcon = (props) => {
                           to={`/purchase-order/${order.id}`}
                           className="text-gray-400 hover:text-blue-400 transition-colors"
                         >
-                          <ViewIcon  className="search-icon" style={{ width: '20px', height: '20px' }}/>
+                          <ViewIcon className="search-icon" style={{ width: '20px', height: '20px' }}/>
                         </Link>
                       </div>
                     </td>
