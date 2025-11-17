@@ -4,13 +4,14 @@ import DeleteIcon from "../components/DeleteIcon";
 import SuccessModal from "../components/SuccessModal";
 
 const STATUS_CANCELLED = "Cancelled";
+const STATUS_DELIVERED = "Delivered";
 
 function PurchaseOrderHeader({ order }) {
     if (!order) return null;
 
-    const steps = ["Pending", "Approved", "Transit", "Delivered"];
+    const steps = ["Pending", "Approved", "Transit", STATUS_DELIVERED];
     const currentStepIndex = steps.indexOf(order.status);
-    const isCancelled = order.status === STATUS_CANCELLED; // if created in setps gonna be added on progress bar
+    const isCancelled = order.status === STATUS_CANCELLED;
 
     const statusColor = {
         Pending: "bg-yellow-500",
@@ -77,7 +78,6 @@ function PurchaseOrderHeader({ order }) {
                     </div>
                 </div>
 
-                {/* Status Progress */}
                 <div className="mt-10">
                     <p className="text-gray-300 mb-4 font-medium">Status Progress</p>
 
@@ -128,6 +128,42 @@ function PurchaseOrderHeader({ order }) {
     );
 }
 
+async function updateProductStock(order) {
+    if (order.status !== STATUS_DELIVERED) {
+        return;
+    }
+
+    for (const item of order.products) {
+        const productData = await fetch(`/products/${item.productId}`).then(res => res.json()).catch(() => null);
+
+        if (!productData) {
+            console.error(`Product not found for ID: ${item.productId}`);
+            continue;
+        }
+
+        const currentStock = parseInt(productData.inStock, 10);
+        const newStock = currentStock + item.quantity;
+
+        try {
+            const res = await fetch(`/products/${item.productId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ inStock: String(newStock) }),
+            });
+
+            if (!res.ok) {
+                throw new Error(`Failed to update stock for ${item.productName}`);
+            }
+
+        } catch (err) {
+            console.error("Error updating product stock:", err);
+        }
+    }
+}
+
+
 export default function PurchaseOrderDetails() {
     const [products, setProducts] = useState([]);
     const [order, setOrder] = useState({});
@@ -149,13 +185,8 @@ export default function PurchaseOrderDetails() {
     useEffect(() => {
         const loadInitialData = async () => {
             try {
-                const [orderRes, inventoryRes] = await Promise.all([
-                    fetch("/purchase-orders"),
-                    fetch("/products"),
-                ]);
-
-                const ordersData = await orderRes.json();
-                const inventory = await inventoryRes.json();
+                const ordersData = await fetch("/purchase-orders").then(res => res.json());
+                const inventory = await fetch("/products").then(res => res.json());
 
                 setAllProducts(inventory);
 
@@ -236,11 +267,13 @@ export default function PurchaseOrderDetails() {
             });
 
             if (!res.ok) {
-                throw new Error("Falha na requisição. Status: " + res.status);
+                throw new Error("Error sending data. Status: " + res.status);
             }
 
             const updatedOrder = await res.json();
             setOrder(updatedOrder);
+
+            await updateProductStock(updatedOrder);
 
             if (successMessage) {
                 handleSuccess(successMessage);
@@ -261,6 +294,11 @@ export default function PurchaseOrderDetails() {
     const cancelOrder = () => {
         const cancelPayload = { status: STATUS_CANCELLED };
         handleSaveChanges(cancelPayload, "Purchase order cancelled successfully!");
+    };
+
+    const markAsDelivered = () => {
+        const deliveredPayload = { status: STATUS_DELIVERED };
+        handleSaveChanges(deliveredPayload, "Purchase order marked as delivered. Product stock updated!");
     };
 
 
@@ -334,6 +372,15 @@ export default function PurchaseOrderDetails() {
                                 </button>
                             </>
                         )}
+                        {/*order.status === "Transit" && (                        */}
+                            <button
+                                onClick={markAsDelivered}
+                                disabled={isSaving}
+                                className="bg-teal-600 hover:bg-teal-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isSaving ? 'Processing...' : 'Mark as Delivered'}
+                            </button>
+
                     </div>
                 </div>
 

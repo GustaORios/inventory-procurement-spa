@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "id": "f53a",
+      "id": "5e1a3f7b-983a-4b90-8b22-982a2e3d25ef",
       "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d25ef",
       "name": "Organic Arabica Coffee Beans 1kg",
       "sku": "COF-ARC-1KG",
@@ -10,14 +10,14 @@
       "supplierId": "c4f8d8a1-8e9a-4f52-bf77-4c3d2e1c5a21",
       "supplierName": "Global Trade Supplies Ltd.",
       "price": 20,
-      "inStock": "500",
+      "inStock": "815",
       "location": "Vancouver Warehouse A3",
       "expirationDate": "2026-05-01",
       "createdAt": "2024-09-12T14:45:00Z",
       "updatedAt": "2025-03-03T09:21:15Z"
     },
     {
-      "id": "f53aaaa",
+      "id": "5e1a3f7b-983a-4b90-8b22-982a2e3d244ef",
       "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d244ef",
       "name": "Organic Brazilian Coffee Beans 1kg",
       "sku": "COF-BRA-1KG",
@@ -33,7 +33,7 @@
       "updatedAt": "2025-03-03T09:21:15Z"
     },
     {
-      "id": "f53ddda",
+      "id": "5e1a3f7b-983a-4b90-8b22-982a2e3d123",
       "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d123",
       "name": "Organic Canadian Coffee Beans 1kg",
       "sku": "COF-CAD-500G",
@@ -49,7 +49,7 @@
       "updatedAt": "2025-03-03T09:21:15Z"
     },
     {
-      "id": "9014",
+      "id": "e49b94cb-7853-4b47-9b18-42a735b94f65",
       "productId": "e49b94cb-7853-4b47-9b18-42a735b94f65",
       "name": "Dark Chocolate Bar 100g",
       "sku": "CHO-DARK-100G",
@@ -161,27 +161,17 @@
       "supplierName": "Pacific Logistics Co.",
       "products": [
         {
-          "productId": "e49b94cb-7853-4b47-9b18-42a735b94f65",
-          "productSku": "CHO-DARK-100G",
-          "quantity": 150,
-          "unitPrice": 2.99,
-          "subtotal": 448.5,
-          "productName": "Dark Chocolate Bar 100g",
-          "brand": "SweetBite",
-          "inventoryPrice": 2.99
-        },
-        {
           "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d25ef",
           "productSku": "COF-ARC-1KG",
           "productName": "Organic Arabica Coffee Beans 1kg",
           "brand": "ArabicaCo",
-          "quantity": 1,
+          "quantity": 100,
           "unitPrice": 20,
-          "subtotal": 20,
+          "subtotal": 2000,
           "inventoryPrice": 20
         }
       ],
-      "total": 468.5,
+      "total": 2000,
       "status": "Pending",
       "deliveryDate": "2025-11-15",
       "createdAt": "2025-11-11"
@@ -196,7 +186,10 @@
           "productSku": "COF-ARC-1KG",
           "quantity": 5,
           "unitPrice": 19.99,
-          "subtotal": 99.95
+          "subtotal": 99.95,
+          "productName": "Organic Arabica Coffee Beans 1kg",
+          "brand": "ArabicaCo",
+          "inventoryPrice": 20
         }
       ],
       "total": 99.95,
