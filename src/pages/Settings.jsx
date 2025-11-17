@@ -1,6 +1,6 @@
 export default function Settings() {
     return (
-        <div className="min-h-screen  text-white p-10 flex flex-col gap-[20px]">
+        <div className=" text-white p-10 flex flex-col gap-[20px]">
             <header className="mb-8">
                 <h1 className="text-3xl font-bold mb-1">Settings</h1>
                 <p className="text-gray-400">

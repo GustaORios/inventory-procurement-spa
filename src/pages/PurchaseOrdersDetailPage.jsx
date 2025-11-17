@@ -1,12 +1,17 @@
-import React, { use, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import DeleteIcon from "../components/DeleteIcon";
+import SuccessModal from "../components/SuccessModal";
+
+const STATUS_CANCELLED = "Cancelled";
+const STATUS_DELIVERED = "Delivered";
 
 function PurchaseOrderHeader({ order }) {
     if (!order) return null;
 
-    const steps = ["Pending", "Approved", "Transit", "Delivered"];
+    const steps = ["Pending", "Approved", "Transit", STATUS_DELIVERED];
     const currentStepIndex = steps.indexOf(order.status);
+    const isCancelled = order.status === STATUS_CANCELLED;
 
     const statusColor = {
         Pending: "bg-yellow-500",
@@ -15,6 +20,10 @@ function PurchaseOrderHeader({ order }) {
         Delivered: "bg-green-500",
         Cancelled: "bg-red-500"
     };
+
+    const progressWidth = isCancelled ? "100%" : `${(currentStepIndex / (steps.length - 1)) * 100}%`;
+    const progressBarColor = isCancelled ? "bg-red-600" : "bg-teal-500";
+
 
     return (
         <>
@@ -69,44 +78,49 @@ function PurchaseOrderHeader({ order }) {
                     </div>
                 </div>
 
-                {/* Status Progress */}
                 <div className="mt-10">
                     <p className="text-gray-300 mb-4 font-medium">Status Progress</p>
 
-                    <div className="relative w-full flex items-center justify-between">
+                    {isCancelled ? (
+                        <div className="w-full text-center p-3 rounded-lg bg-red-900/50 border border-red-600 text-red-300 font-semibold flex items-center justify-center gap-2">
+                            Order Cancelled
+                        </div>
+                    ) : (
+                        <div className="relative w-full flex items-center justify-between">
 
-                        <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-700 rounded-full"></div>
+                            <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-700 rounded-full"></div>
 
-                        <div
-                            className="absolute top-1/2 left-0 h-1 bg-teal-500 rounded-full transition-all duration-300"
-                            style={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}
-                        ></div>
+                            <div
+                                className={`absolute top-1/2 left-0 h-1 rounded-full transition-all duration-300 ${progressBarColor}`}
+                                style={{ width: progressWidth }}
+                            ></div>
 
-                        {steps.map((step, index) => {
-                            const active = index <= currentStepIndex;
+                            {steps.map((step, index) => {
+                                const active = index <= currentStepIndex;
 
-                            return (
-                                <div
-                                    key={step}
-                                    className="relative flex flex-col items-center z-10 w-1/3"
-                                >
+                                return (
                                     <div
-                                        className={`w-6 h-6 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${active
-                                            ? "border-teal-500 bg-teal-500"
-                                            : "border-gray-500 bg-gray-900"
-                                            }`}
-                                    ></div>
-
-                                    <span
-                                        className={`mt-2 text-sm font-medium ${active ? "text-white" : "text-gray-500"
-                                            }`}
+                                        key={step}
+                                        className="relative flex flex-col items-center z-10 w-1/3"
                                     >
-                                        {step}
-                                    </span>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                        <div
+                                            className={`w-6 h-6 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${active
+                                                ? "border-teal-500 bg-teal-500"
+                                                : "border-gray-500 bg-gray-900"
+                                                }`}
+                                        ></div>
+
+                                        <span
+                                            className={`mt-2 text-sm font-medium ${active ? "text-white" : "text-gray-500"
+                                                }`}
+                                        >
+                                            {step}
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
 
             </div>
@@ -114,27 +128,65 @@ function PurchaseOrderHeader({ order }) {
     );
 }
 
+async function updateProductStock(order) {
+    if (order.status !== STATUS_DELIVERED) {
+        return;
+    }
+
+    for (const item of order.products) {
+        const productData = await fetch(`/products/${item.productId}`).then(res => res.json()).catch(() => null);
+
+        if (!productData) {
+            console.error(`Product not found for ID: ${item.productId}`);
+            continue;
+        }
+
+        const currentStock = parseInt(productData.inStock, 10);
+        const newStock = currentStock + item.quantity;
+
+        try {
+            const res = await fetch(`/products/${item.productId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ inStock: String(newStock) }),
+            });
+
+            if (!res.ok) {
+                throw new Error(`Failed to update stock for ${item.productName}`);
+            }
+
+        } catch (err) {
+            console.error("Error updating product stock:", err);
+        }
+    }
+}
+
+
 export default function PurchaseOrderDetails() {
     const [products, setProducts] = useState([]);
     const [order, setOrder] = useState({});
     const [isSaving, setIsSaving] = useState(false);
     const [saveError, setSaveError] = useState(null);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
     const { orderId } = useParams();
 
     const [allProducts, setAllProducts] = useState([]);
 
     const [productToAdd, setProductToAdd] = useState("");
 
+    const handleSuccess = (message) => {
+        setModalMessage(message);
+        setShowSuccessModal(true);
+    }
+
     useEffect(() => {
         const loadInitialData = async () => {
             try {
-                const [orderRes, inventoryRes] = await Promise.all([
-                    fetch("/purchase-orders"),
-                    fetch("/products"),
-                ]);
-
-                const ordersData = await orderRes.json();
-                const inventory = await inventoryRes.json();
+                const ordersData = await fetch("/purchase-orders").then(res => res.json());
+                const inventory = await fetch("/products").then(res => res.json());
 
                 setAllProducts(inventory);
 
@@ -192,40 +244,17 @@ export default function PurchaseOrderDetails() {
         );
     };
 
-    const cancelOrder = async () => {
-        const payload = {
-            status: "Cancelled"
-        };
-
-        try {
-            const res = await fetch(`/purchase-orders/${orderId}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
-
-            if (!res.ok) {
-                throw new Error("Error");
-            }
-
-        } catch (err) {
-            console.error("Error", err);
-        } finally {
-            setIsSaving(false);
-        };
-    }
-
-    const handleSaveChanges = async () => {
+    const handleSaveChanges = async (customPayload = {}, successMessage) => {
         setIsSaving(true);
         setSaveError(null);
 
         const newTotal = products.reduce((acc, p) => acc + (p.subtotal || 0), 0);
 
         const payload = {
+            ...order,
             products: products,
-            total: newTotal
+            total: newTotal,
+            ...customPayload
         };
 
         try {
@@ -238,18 +267,38 @@ export default function PurchaseOrderDetails() {
             });
 
             if (!res.ok) {
-                throw new Error("Error");
+                throw new Error("Error sending data. Status: " + res.status);
             }
 
             const updatedOrder = await res.json();
             setOrder(updatedOrder);
 
+            await updateProductStock(updatedOrder);
+
+            if (successMessage) {
+                handleSuccess(successMessage);
+            }
+
         } catch (err) {
-            console.error("Error", err);
+            console.error("Error saving order:", err);
             setSaveError(err.message);
         } finally {
             setIsSaving(false);
         }
+    };
+
+    const handleSaveProducts = () => {
+        handleSaveChanges({}, "Purchase order products updated successfully!");
+    };
+
+    const cancelOrder = () => {
+        const cancelPayload = { status: STATUS_CANCELLED };
+        handleSaveChanges(cancelPayload, "Purchase order cancelled successfully!");
+    };
+
+    const markAsDelivered = () => {
+        const deliveredPayload = { status: STATUS_DELIVERED };
+        handleSaveChanges(deliveredPayload, "Purchase order marked as delivered. Product stock updated!");
     };
 
 
@@ -295,8 +344,6 @@ export default function PurchaseOrderDetails() {
         setOrder(o => ({ ...o, total: totalOrder }));
     }, [totalOrder]);
 
-    console.log(products)
-
     return (
         <>
             <div className="max-w-7xl mx-auto py-1">
@@ -309,7 +356,7 @@ export default function PurchaseOrderDetails() {
                         Products
                     </h2>
                     <div className="flex justify-between items-center mb-6 mt-5 gap-4">
-                        {order.status == "Pending" && (
+                        {order.status === "Pending" && (
                             <>
                                 <button
                                     onClick={cancelOrder}
@@ -317,16 +364,33 @@ export default function PurchaseOrderDetails() {
                                     className="bg-red-600 hover:bg-red-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >Cancel Order</button>
                                 <button
-                                    onClick={handleSaveChanges}
+                                    onClick={handleSaveProducts}
                                     disabled={isSaving}
                                     className="bg-green-600 hover:bg-green-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {isSaving ? 'saving...' : 'Save'}
+                                    {isSaving ? 'Saving...' : 'Save'}
                                 </button>
                             </>
                         )}
+                        {/*order.status === "Transit" && (                        */}
+                            <button
+                                onClick={markAsDelivered}
+                                disabled={isSaving}
+                                className="bg-teal-600 hover:bg-teal-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isSaving ? 'Processing...' : 'Mark as Delivered'}
+                            </button>
+
                     </div>
                 </div>
+
+                {showSuccessModal && (
+                    <SuccessModal
+                        message={modalMessage}
+                        onClose={() => setShowSuccessModal(false)}
+                    />
+                )}
+
 
                 <div className="bg-gray-900/50 shadow-xl rounded-xl overflow-hidden border border-gray-700">
                     <table className="min-w-full text-left">
@@ -338,7 +402,7 @@ export default function PurchaseOrderDetails() {
                                 <th className="px-6 py-3">Qty</th>
                                 <th className="px-6 py-3">Unit Price</th>
                                 <th className="px-6 py-3">Sub Total</th>
-                                {order.status == "Pending" && (
+                                {order.status === "Pending" && (
                                     <th className="px-4 py-3 text-center">Actions</th>
                                 )}
                             </tr>
@@ -360,7 +424,7 @@ export default function PurchaseOrderDetails() {
                                         {product.brand}
                                     </td>
 
-                                    {order.status == "Pending" ? (
+                                    {order.status === "Pending" ? (
                                         <>
                                             <td className="px-6 py-4 text-gray-300">
                                                 <input
@@ -407,7 +471,7 @@ export default function PurchaseOrderDetails() {
                                         ${(product.subtotal || 0).toFixed(2)}
                                     </td>
 
-                                    {order.status == "Pending" && (
+                                    {order.status === "Pending" && (
                                         <td className="px-4 py-4 text-center">
                                             <button
                                                 onClick={() => handleRemoveProduct(product.productSku)}
@@ -430,11 +494,13 @@ export default function PurchaseOrderDetails() {
                             className="flex-1 bg-gray-700 text-white rounded px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500"
                         >
                             <option value="">Select a product to add</option>
-                            {availableProducts.map(invProduct => (
-                                <option key={invProduct.productId} value={invProduct.productId}>
-                                    {invProduct.name} ({invProduct.sku})
-                                </option>
-                            ))}
+                            {availableProducts
+                                .filter(invProduct => invProduct.inStock > 0)
+                                .map(invProduct => (
+                                    <option key={invProduct.productId} value={invProduct.productId}>
+                                        {invProduct.name} ({invProduct.sku})
+                                    </option>
+                                ))}
                         </select>
                         <button
                             onClick={handleAddProduct}
