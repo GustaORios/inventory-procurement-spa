@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import EditIcon from "../components/EditIcon";
+import DeleteIcon from "../components/DeleteIcon";
 
 export default function SuppliersPage() {
   const [suppliers, setSuppliers] = useState([]);
@@ -137,7 +139,7 @@ export default function SuppliersPage() {
 
       <div className="bg-gray-900/50 shadow-xl rounded-xl overflow-hidden border border-gray-700 mt-[30px]">
 
-        <table className="min-w-full text-left mt-[30px]">
+        <table className="min-w-full text-left">
           <thead className="bg-gray-800 uppercase text-xs text-gray-400 font-medium tracking-wider">
             <tr>
               <th scope="col" className="px-6 py-3">Supplier Name</th>
@@ -189,7 +191,7 @@ export default function SuppliersPage() {
                         title="Edit"
                         className="text-gray-400 hover:text-blue-400 transition-colors"
                       >
-                        Edit
+                        <EditIcon/>
                       </Link>
                       <button
                         onClick={() => {
@@ -198,7 +200,7 @@ export default function SuppliersPage() {
                         }}
                         className="text-gray-400 hover:text-red-500 transition-colors"
                       >
-                        Delete
+                        <DeleteIcon/>
                       </button>
 
 
