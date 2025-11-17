@@ -13,6 +13,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
 import PurchaseOrders from './pages/PurchaseOrdersPage';
 import PurchaseOrdersDetail from './pages/PurchaseOrdersDetailPage';
+import CreatePurchaseOrder from './components/CreatePurchaseOrder';
 
 
 export default function App() {
@@ -263,8 +264,13 @@ export default function App() {
           </ProtectedRoute>
         } />
 
+        <Route path="purchase-order/add" element={
+          <ProtectedRoute allowedRoles={["admin", "manager", "supplier"]}>
+            <CreatePurchaseOrder/>
+          </ProtectedRoute>
+        } />
 
-        <Route path="*" element={<div>Página não encontrada</div>} />
+        <Route path="*" element={<div>404 - Not found</div>} />
       </Route>
     </Routes>
   );

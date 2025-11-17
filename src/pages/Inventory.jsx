@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
+import EditIcon from '../components/EditIcon';
+import DeleteIcon from '../components/DeleteIcon';
 
 function ConfirmationModal({ isOpen, onClose, onConfirm, productName }) {
     if (!isOpen) return null;
@@ -33,6 +35,7 @@ function ConfirmationModal({ isOpen, onClose, onConfirm, productName }) {
         </div>
     );
 }
+
 
 function InventoryTable({ products, selectedProductIds, setselectedProductIds, openDeleteModal }) {
     const { user } = useContext(UserContext);
@@ -78,7 +81,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
             <table className="min-w-full text-left">
                 <thead className="bg-gray-800 uppercase text-xs text-gray-400 font-medium tracking-wider">
                     <tr>
-                        <th scope="col" className="px-3 py-3 w-10">
+                        <th scope="col" className="px-2 py-3 w-10">
                             <input
                                 type="checkbox"
                                 checked={selectedProductIds.length === products.length && products.length > 0}
@@ -86,18 +89,18 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                                 className="h-4 w-4 text-teal-500 border-gray-600 rounded bg-gray-700 cursor-pointer focus:ring-teal-500"
                             />
                         </th>
-                        <th scope="col" className="px-3 py-3">SKU</th>
-                        <th scope="col" className="px-6 py-3">Product Name</th>
-                        <th scope="col" className="px-6 py-3">Category</th>
-                        <th scope="col" className="px-6 py-3">Brand</th>
-                        <th scope="col" className="px-6 py-3">Supplier</th> {/* // <-- NOVO CABEÇALHO */}
-                        <th scope="col" className="px-4 py-3 text-right">Price</th>
-                        <th scope="col" className="px-4 py-3 text-center">Stock</th>
-                        <th scope="col" className="px-6 py-3">Location</th>
-                        <th scope="col" className="px-6 py-3">Exp. Date</th>
-                        <th scope="col" className="px-6 py-3">Status</th>
+                        <th scope="col" className="px-1 py-3">SKU</th>
+                        <th scope="col" className="px-3 py-3">Product Name</th>
+                        <th scope="col" className="px-3 py-3">Category</th>
+                        <th scope="col" className="px-3 py-3">Brand</th>
+                        <th scope="col" className="px-4 py-3">Supplier</th>
+                        <th scope="col" className="px-5 py-3 text-right">Price</th>
+                        <th scope="col" className="px-2 py-3 text-center">Stock</th>
+                        <th scope="col" className="px-10 py-3">Location</th>
+                        <th scope="col" className="px-10 py-3">Exp. Date</th>
+                        <th scope="col" className="px-4 py-3">Status</th>
                         {user?.role != "supplier" && user?.role != "manager" && (
-                            <th scope="col" className="px-6 py-3">Actions</th>
+                            <th scope="col" className="px-1 py-2">Actions</th>
                         )}
                     </tr>
                 </thead>
@@ -105,7 +108,7 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                 <tbody className="divide-y divide-gray-700">
                     {products.length === 0 ? (
                         <tr>
-                            <td colSpan="12" className="px-6 py-4 text-center text-gray-500"> {/* // <-- colSpan ATUALIZADO DE 11 PARA 12 */}
+                            <td colSpan="12" className="px-6 py-4 text-center text-gray-500">
                                 No products listed.
                             </td>
                         </tr>
@@ -113,23 +116,23 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                         products.map((product) => (
                             <tr key={product.productId} className="hover:bg-gray-800 transition-colors">
 
-                                <td className="px-3 py-4">
+                                <td className="px-2 py-4">
                                     <input
                                         type="checkbox"
-                                        checked={selectedProductIds.includes(product.sku)}
-                                        onChange={() => handleSelect(product.sku)}
+                                        checked={selectedProductIds.includes(product.productId)}
+                                        onChange={() => handleSelect(product.productId)}
                                         className="h-4 w-4 text-teal-500 border-gray-600 rounded bg-gray-700 cursor-pointer focus:ring-teal-500"
                                     />
                                 </td>
-                                <td className="px-3 py-4 text-gray-500 font-mono text-xs">{product.sku}</td>
-                                <td className="px-6 py-4 font-medium text-white">{product.name}</td>
-                                <td className="px-6 py-4 text-gray-300">{product.category}</td>
-                                <td className="px-6 py-4 text-gray-300">{product.brand}</td>
-                                <td className="px-6 py-4 text-gray-300">{product.supplier || 'N/A'}</td> {/* // <-- NOVO DADO */}
-                                <td className="px-4 py-4 text-right text-teal-400 font-mono">
+                                <td className="px-1 py-4 text-gray-500 font-mono text-xs">{product.sku}</td>
+                                <td className="px-3 py-4 font-medium text-white">{product.name}</td>
+                                <td className="px-3 py-4 text-gray-300">{product.category}</td>
+                                <td className="px-3 py-4 text-gray-300">{product.brand}</td>
+                                <td className="px-4 py-4 text-gray-300">{product.supplierName || 'N/A'}</td>
+                                <td className="px-1 py-4 text-right text-teal-400 font-mono">
                                     ${parseFloat(product.price).toFixed(2)}
                                 </td>
-                                <td className="px-4 py-4 text-center text-white font-semibold">
+                                <td className="px-1 py-4 text-center text-white font-semibold">
                                     {product.inStock}
                                 </td>
                                 <td className="px-6 py-4 text-gray-400 text-sm">{product.location}</td>
@@ -137,24 +140,26 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
                                     {product.expirationDate || 'N/A'}
                                 </td>
                                 <td className="px-6 py-4">{renderStatus(product.inStock)}</td>
-                                {user?.role != "supplier" && user?.role != "manager" &&(
+                                {user?.role != "supplier" && user?.role != "manager" && (
                                     <td className="px-6 py-4">
-                                        <div className="flex gap-4 text-sm font-medium">
+                                        <div className="flex flex-col gap-3 text-sm font-medium">
                                             <Link
                                                 to={`/inventory/edit/${product.productId}`}
                                                 title="Edit"
                                                 className="text-gray-400 hover:text-blue-400 transition-colors"
                                             >
-                                                Edit
+                                                <EditIcon/>
                                             </Link>
+
                                             <button
                                                 onClick={() => openDeleteModal(product)}
                                                 title="Delete"
                                                 className="text-gray-400 hover:text-red-500 transition-colors"
                                             >
-                                                Delete
+                                                <DeleteIcon/>
                                             </button>
                                         </div>
+
                                     </td>)}
                             </tr>
                         ))
@@ -179,13 +184,10 @@ function InventoryTable({ products, selectedProductIds, setselectedProductIds, o
 
 export default function Inventory({ products, handleDeleteProduct }) {
     const { user } = useContext(UserContext);
-
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
     const [selectedProductIds, setselectedProductIds] = useState([]);
-
-
     const [filterStatus, setFilterStatus] = useState('');
 
     const openDeleteModal = (product) => {
@@ -252,7 +254,7 @@ export default function Inventory({ products, handleDeleteProduct }) {
                     </select>
                 </div>
 
-                {user?.role != "supplier"  && user?.role != "manager" &&(
+                {user?.role != "supplier" && user?.role != "manager" && (
                     <Link
                         to="/inventory/add"
                         className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50 transform hover:scale-[1.01]"

@@ -7,6 +7,8 @@
       "sku": "COF-ARC-1KG",
       "category": "Beverages",
       "brand": "ArabicaCo",
+      "supplierId": "c4f8d8a1-8e9a-4f52-bf77-4c3d2e1c5a21",
+      "supplierName": "Global Trade Supplies Ltd.",
       "price": 20,
       "inStock": "500",
       "location": "Vancouver Warehouse A3",
@@ -21,6 +23,8 @@
       "sku": "COF-BRA-1KG",
       "category": "Beverages",
       "brand": "Nescafe",
+      "supplierId": "7a62c1e4-s1d8f-496c-9314-952b2c631b9ac",
+      "supplierName": "Evergreen imports",
       "price": 20,
       "inStock": "100",
       "location": "Vancouver Warehouse A3",
@@ -35,8 +39,10 @@
       "sku": "COF-CAD-500G",
       "category": "Beverages",
       "brand": "Tim Hortons",
+      "supplierId": "7a62c1e4-s1d8f-496c-9314-952b2c631b9ac",
+      "supplierName": "Evergreen imports",
       "price": 20,
-      "inStock": "250",
+      "inStock": "98",
       "location": "Vancouver Warehouse A3",
       "expirationDate": "2026-05-01",
       "createdAt": "2024-09-12T14:45:00Z",
@@ -49,8 +55,10 @@
       "sku": "CHO-DARK-100G",
       "category": "Snacks",
       "brand": "SweetBite",
+      "supplierId": "7a62c1e4-s1d8f-496c-9314-952b2c631b9ac",
+      "supplierName": "Pacific Logistics Co.",
       "price": 2.99,
-      "inStock": "700",
+      "inStock": "0",
       "location": "Calgary Storage C2",
       "expirationDate": "2025-12-20",
       "createdAt": "2024-07-01T09:00:00Z",
@@ -98,7 +106,7 @@
   ],
   "purchase-orders": [
     {
-      "id": 1001,
+      "id": "1001",
       "supplierId": "c4f8d8a1-8e9a-4f52-bf77-4c3d2e1c5a21",
       "supplierName": "Global Trade Supplies Ltd.",
       "products": [
@@ -107,30 +115,48 @@
           "productSku": "COF-ARC-1KG",
           "quantity": 20,
           "unitPrice": 10,
-          "subtotal": 200
+          "subtotal": 200,
+          "productName": "Organic Arabica Coffee Beans 1kg",
+          "brand": "ArabicaCo",
+          "inventoryPrice": 20
         },
         {
           "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d244ef",
           "productSku": "COF-BRA-1KG",
           "quantity": 20,
           "unitPrice": 10,
-          "subtotal": 200
+          "subtotal": 200,
+          "productName": "Organic Brazilian Coffee Beans 1kg",
+          "brand": "Nescafe",
+          "inventoryPrice": 20
         },
         {
           "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d123",
           "productSku": "COF-CAD-500G",
           "quantity": 10,
           "unitPrice": 5,
-          "subtotal": 50
+          "subtotal": 50,
+          "productName": "Organic Canadian Coffee Beans 1kg",
+          "brand": "Tim Hortons",
+          "inventoryPrice": 20
+        },
+        {
+          "productId": "e49b94cb-7853-4b47-9b18-42a735b94f65",
+          "productSku": "CHO-DARK-100G",
+          "productName": "Dark Chocolate Bar 100g",
+          "brand": "SweetBite",
+          "quantity": 1,
+          "unitPrice": 2.99,
+          "subtotal": 2.99
         }
       ],
-      "total": 450,
-      "status": "Pending",
+      "total": 452.99,
+      "status": "Approved",
       "deliveryDate": "2025-11-15",
       "createdAt": "2025-11-10"
     },
     {
-      "id": 1002,
+      "id": "1002",
       "supplierId": "b19cfd43-4f25-4bb8-8e1a-29b0dc8cb6c2",
       "supplierName": "Pacific Logistics Co.",
       "products": [
@@ -139,16 +165,29 @@
           "productSku": "CHO-DARK-100G",
           "quantity": 150,
           "unitPrice": 2.99,
-          "subtotal": 448.5
+          "subtotal": 448.5,
+          "productName": "Dark Chocolate Bar 100g",
+          "brand": "SweetBite",
+          "inventoryPrice": 2.99
+        },
+        {
+          "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d25ef",
+          "productSku": "COF-ARC-1KG",
+          "productName": "Organic Arabica Coffee Beans 1kg",
+          "brand": "ArabicaCo",
+          "quantity": 1,
+          "unitPrice": 20,
+          "subtotal": 20,
+          "inventoryPrice": 20
         }
       ],
-      "total": 448.5,
-      "status": "Approved",
+      "total": 468.5,
+      "status": "Pending",
       "deliveryDate": "2025-11-15",
       "createdAt": "2025-11-11"
     },
     {
-      "id": 1003,
+      "id": "1003",
       "supplierId": "82c9ec48-6c03-41d6-849f-4570046f2767",
       "supplierName": "pepe",
       "products": [
@@ -164,6 +203,46 @@
       "status": "Delivered",
       "deliveryDate": "2025-11-15",
       "createdAt": "2025-11-12"
+    },
+    {
+      "id": "1763325867735",
+      "supplierId": "c4f8d8a1-8e9a-4f52-bf77-4c3d2e1c5a21",
+      "supplierName": "Global Trade Supplies Ltd.",
+      "deliveryDate": "2025-11-19",
+      "createdAt": "2025-11-16",
+      "status": "Cancelled",
+      "products": [
+        {
+          "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d25ef",
+          "productSku": "COF-ARC-1KG",
+          "productName": "Organic Arabica Coffee Beans 1kg",
+          "brand": "ArabicaCo",
+          "quantity": 1,
+          "unitPrice": 20,
+          "subtotal": 20
+        }
+      ],
+      "total": 20
+    },
+    {
+      "id": "1763328598539",
+      "supplierId": "b19cfd43-4f25-4bb8-8e1a-29b0dc8cb6c2",
+      "supplierName": "Pacific Logistics Co.",
+      "deliveryDate": "2025-11-18",
+      "createdAt": "2025-11-16",
+      "status": "Cancelled",
+      "products": [
+        {
+          "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d123",
+          "productSku": "COF-CAD-500G",
+          "productName": "Organic Canadian Coffee Beans 1kg",
+          "brand": "Tim Hortons",
+          "quantity": 1,
+          "unitPrice": 20,
+          "subtotal": 20
+        }
+      ],
+      "total": 20
     }
   ]
 }
