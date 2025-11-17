@@ -11,6 +11,9 @@ import EditSupplier from './pages/EditSupplier';
 import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
+import PurchaseOrders from './pages/PurchaseOrdersPage';
+import PurchaseOrdersDetail from './pages/PurchaseOrdersDetailPage';
+import CreatePurchaseOrder from './components/CreatePurchaseOrder';
 
 
 export default function App() {
@@ -59,26 +62,26 @@ export default function App() {
 
 
   const handleEditProduct = async (updatedProduct) => {
-  try {
-    const res = await fetch(`/products/${updatedProduct.id}`, {
-      method: "PUT",      // o PATCH
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedProduct),
-    });
+    try {
+      const res = await fetch(`/products/${updatedProduct.id}`, {
+        method: "PUT",      // o PATCH
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedProduct),
+      });
 
-    if (!res.ok) throw new Error("we couldn't update the product");
+      if (!res.ok) throw new Error("we couldn't update the product");
 
-    const savedProduct = await res.json();
+      const savedProduct = await res.json();
 
-    setProducts(prev =>
-      prev.map(p =>
-        p.id === savedProduct.id ? savedProduct : p
-      )
-    );
-  } catch (err) {
-    console.error(err);
-  }
-};
+      setProducts(prev =>
+        prev.map(p =>
+          p.id === savedProduct.id ? savedProduct : p
+        )
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
 
 
@@ -248,6 +251,24 @@ export default function App() {
         />
 
         <Route path="settings" element={<Settings />} />
+
+        <Route path="purchase-orders" element={
+          <ProtectedRoute allowedRoles={["admin", "manager", "supplier"]}>
+            <PurchaseOrders/>
+          </ProtectedRoute>
+        } />
+
+        <Route path="purchase-order/:orderId" element={
+          <ProtectedRoute allowedRoles={["admin", "manager", "supplier"]}>
+            <PurchaseOrdersDetail/>
+          </ProtectedRoute>
+        } />
+
+        <Route path="purchase-order/add" element={
+          <ProtectedRoute allowedRoles={["admin", "manager", "supplier"]}>
+            <CreatePurchaseOrder/>
+          </ProtectedRoute>
+        } />
 
         <Route path="*" element={<div>Página não encontrada</div>} />
       </Route>
