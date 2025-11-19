@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import DeleteIcon from "../components/DeleteIcon";
 import SuccessModal from "../components/SuccessModal";
+import { UserContext } from "../UserContext";
 
 const STATUS_CANCELLED = "Cancelled";
 const STATUS_DELIVERED = "Delivered";
+const STATUS_PENDING = "Pending";
 
 function PurchaseOrderHeader({ order }) {
     if (!order) return null;
 
-    const steps = ["Pending", "Approved", "Transit", STATUS_DELIVERED];
+    const steps = [STATUS_PENDING, "Approved", "Transit", STATUS_DELIVERED];
     const currentStepIndex = steps.indexOf(order.status);
     const isCancelled = order.status === STATUS_CANCELLED;
 
@@ -172,6 +174,7 @@ export default function PurchaseOrderDetails() {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
     const { orderId } = useParams();
+    const { user } = useContext(UserContext);
 
     const [allProducts, setAllProducts] = useState([]);
 
@@ -356,23 +359,25 @@ export default function PurchaseOrderDetails() {
                         Products
                     </h2>
                     <div className="flex justify-between items-center mb-6 mt-5 gap-4">
-                        {order.status === "Pending" && (
-                            <>
-                                <button
-                                    onClick={cancelOrder}
-                                    disabled={isSaving}
-                                    className="bg-red-600 hover:bg-red-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >Cancel Order</button>
-                                <button
-                                    onClick={handleSaveProducts}
-                                    disabled={isSaving}
-                                    className="bg-green-600 hover:bg-green-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {isSaving ? 'Saving...' : 'Save'}
-                                </button>
-                            </>
+                        {order.status === STATUS_PENDING && (
+                            user?.role != "supplier" && user?.role != "picker" && (
+                                <>
+                                    <button
+                                        onClick={cancelOrder}
+                                        disabled={isSaving}
+                                        className="bg-red-600 hover:bg-red-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >Cancel Order</button>
+                                    <button
+                                        onClick={handleSaveProducts}
+                                        disabled={isSaving}
+                                        className="bg-green-600 hover:bg-green-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {isSaving ? 'Saving...' : 'Save'}
+                                    </button>
+                                </>
+                            )
                         )}
-                        {/*order.status === "Transit" && (                        */}
+                        {order.status != STATUS_CANCELLED && user.role != 'supplier'&& (
                             <button
                                 onClick={markAsDelivered}
                                 disabled={isSaving}
@@ -380,6 +385,7 @@ export default function PurchaseOrderDetails() {
                             >
                                 {isSaving ? 'Processing...' : 'Mark as Delivered'}
                             </button>
+                        )}
 
                     </div>
                 </div>
@@ -424,7 +430,7 @@ export default function PurchaseOrderDetails() {
                                         {product.brand}
                                     </td>
 
-                                    {order.status === "Pending" ? (
+                                    {order.status === STATUS_PENDING ? (
                                         <>
                                             <td className="px-6 py-4 text-gray-300">
                                                 <input
@@ -471,7 +477,7 @@ export default function PurchaseOrderDetails() {
                                         ${(product.subtotal || 0).toFixed(2)}
                                     </td>
 
-                                    {order.status === "Pending" && (
+                                    {order.status === STATUS_PENDING && (
                                         <td className="px-4 py-4 text-center">
                                             <button
                                                 onClick={() => handleRemoveProduct(product.productSku)}
@@ -487,29 +493,33 @@ export default function PurchaseOrderDetails() {
                         </tbody>
                     </table>
 
-                    <div className="flex items-center gap-4 px-4 py-4 border-t border-gray-700 bg-gray-800/50">
-                        <select
-                            value={productToAdd}
-                            onChange={(e) => setProductToAdd(e.target.value)}
-                            className="flex-1 bg-gray-700 text-white rounded px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                        >
-                            <option value="">Select a product to add</option>
-                            {availableProducts
-                                .filter(invProduct => invProduct.inStock > 0)
-                                .map(invProduct => (
-                                    <option key={invProduct.productId} value={invProduct.productId}>
-                                        {invProduct.name} ({invProduct.sku})
-                                    </option>
-                                ))}
-                        </select>
-                        <button
-                            onClick={handleAddProduct}
-                            disabled={!productToAdd}
-                            className="bg-teal-600 hover:bg-teal-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            Add product
-                        </button>
-                    </div>
+                    {user?.role != "supplier" && user?.role != "picker" && (
+                         order?.status === STATUS_PENDING && (
+                            <div className="flex items-center gap-4 px-4 py-4 border-t border-gray-700 bg-gray-800/50">
+                                <select
+                                    value={productToAdd}
+                                    onChange={(e) => setProductToAdd(e.target.value)}
+                                    className="flex-1 bg-gray-700 text-white rounded px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                >
+                                    <option value="">Select a product to add</option>
+                                    {availableProducts
+                                        .filter(invProduct => invProduct.inStock > 0)
+                                        .map(invProduct => (
+                                            <option key={invProduct.productId} value={invProduct.productId}>
+                                                {invProduct.name} ({invProduct.sku})
+                                            </option>
+                                        ))}
+                                </select>
+                                <button
+                                    onClick={handleAddProduct}
+                                    disabled={!productToAdd}
+                                    className="bg-teal-600 hover:bg-teal-500 text-white font-semibold px-4 py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Add product
+                                </button>
+                            </div>
+                        )   
+                    )}
 
                     <div className="flex justify-between items-center px-4 py-3 border-t border-gray-700 bg-gray-800/50 text-sm">
                         <div className="flex gap-1">

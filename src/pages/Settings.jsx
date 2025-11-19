@@ -32,7 +32,7 @@ export default function Settings() {
                     <button
                         id="ChangePassword"
                         type="button"
-                        className="bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                        className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50 transform hover:scale-[1.01]"
                     >
                         Change Password
                     </button>

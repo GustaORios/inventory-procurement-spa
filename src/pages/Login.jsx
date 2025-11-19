@@ -9,7 +9,7 @@ export default function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
     if (password) {
-      login(username, password);
+      login(username.toLowerCase(), password.toLowerCase());
     } else {
       alert("Invalid credentials");
     }
