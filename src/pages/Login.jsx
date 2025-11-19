@@ -8,7 +8,8 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (password) {
+    console.log(password)
+    if (password === 'picker' || password === 'manager' || password === 'admin' || password === 'supplier') {
       login(username.toLowerCase(), password.toLowerCase());
     } else {
       alert("Invalid credentials");
