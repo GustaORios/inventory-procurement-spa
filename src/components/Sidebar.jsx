@@ -8,6 +8,9 @@ import {
     Cog6ToothIcon 
 } from '@heroicons/react/24/solid';
 
+
+import logo from './SATURN.png'; 
+
 const sidebarTheme = {
   bg: "bg-gray-900",
   border: "border-gray-700",
@@ -19,7 +22,7 @@ const sidebarTheme = {
 };
 
 const menuItems = [
-  // Ícones uniformizados para componentes Heroicons
+  
   { name: 'Inventory', path: '/inventory', icon: CubeIcon, role: ['picker', 'manager', 'admin'] },
   { name: "Suppliers", path: "/suppliers", icon: UsersIcon, role: ['manager', 'admin'] },
   { name: "Purchase Orders", path: "/purchase-orders", icon: ReceiptPercentIcon, role: ['supplier', 'manager', 'admin', 'picker'] },
@@ -38,12 +41,10 @@ export default function Sidebar() {
     
     <aside className={`w-60 flex flex-col p-4 shadow-2xl ${sidebarTheme.bg} ${sidebarTheme.border} border-r`}>
       
-      <div className="flex items-center gap-3 mb-10 p-2">
-        <div className={`w-10 h-10 ${sidebarTheme.bg} rounded-full flex items-center justify-center border-2 border-teal-500`}>
-          <span className={`font-extrabold ${sidebarTheme.accent} text-xl`}>NT</span>
-        </div>
-        <span className="text-white font-extrabold text-2xl">NTG</span>
+      <div className="flex items-center justify-center mb-10 p-2">
+        <img src={logo} alt="Saturn Logo" className="w-32" /> 
       </div>
+      
 
       <nav className="flex flex-col gap-1">
         {menuItems
