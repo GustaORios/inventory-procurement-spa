@@ -21,7 +21,7 @@ export default function PurchaseOrders() {
   const [filterStatus, setFilterStatus] = useState("");
 
   const filteredOrders = orders.filter((order) => {
-    // Note: assumi que o ID é uma string para a busca. Se for um número, remova .toLowerCase()
+
     const matchesSearch = String(order.id)
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
@@ -39,7 +39,7 @@ export default function PurchaseOrders() {
     const colors = {
       Pending: "bg-yellow-500",
       Approved: "bg-blue-500",
-      Transit: "bg-aqua-500", // Tailwind não tem 'bg-aqua-500', usarei uma cor próxima se for customizada
+      Transit: "bg-aqua-500", 
       Delivered: "bg-green-500",
       Cancelled: "bg-red-500"
     };
@@ -75,9 +75,8 @@ export default function PurchaseOrders() {
           Purchase Orders
         </h1>
 
-        {/* Filters and Button (ALTERADO AQUI) */}
         <div className="flex items-center mb-8"> 
-          <div className="flex gap-4"> {/* Agrupa Filtros e Botão */}
+          <div className="flex gap-4"> 
 
             <input
               type="text"
@@ -101,7 +100,6 @@ export default function PurchaseOrders() {
               <option value="delivered">Delivered</option>
             </select>
           
-            {/* Botão Create Purchase Order AGORA DENTRO DO GRUPO DE FILTROS */}
             <Link
               to="/purchase-order/add"
               className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold

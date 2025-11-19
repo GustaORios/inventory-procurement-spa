@@ -7,7 +7,7 @@ export default function EditSupplier({ suppliers, onUpdate }) {
     const existing = suppliers.find(s => s.id === id);
 
     const handleSave = (formData) => {
-        onUpdate(formData); // aquí tú haces el update en el estado padre
+        onUpdate(formData); 
     };
 
     return (

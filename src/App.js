@@ -160,7 +160,7 @@ export default function App() {
     loadSuppliers();
   }, []);
 
-  // Função para ENCONTRAR um produto pelo SKU (necessário para a tela de edição
+  
   const getProductBySku = (productId) => {
     return products.find(p => p.productId === productId);
   };
