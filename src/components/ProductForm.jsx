@@ -98,7 +98,10 @@ export default function ProductForm({ title, initialData, onSave }) {
       .then((response) => response.json())
       .then((data) => {
         setSuppliers(data);
-        console.log(data);
+
+        const match = data.filter(supplier => supplier.role === 'supplier');
+        if(match) setSuppliers(match);
+
       })
       .catch((error) => {
         console.error("Error fetching suppliers:", error);
