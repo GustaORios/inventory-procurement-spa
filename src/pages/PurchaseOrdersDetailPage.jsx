@@ -338,9 +338,12 @@ export default function PurchaseOrderDetails() {
         setProductToAdd("");
     };
 
-    const availableProducts = allProducts.filter(
-        inv => !products.some(p => p.productId === inv.productId)
+    const availableProducts = allProducts.filter(product =>
+        product.supplierId === order.supplierId &&
+        !products.some(p => p.productId === product.productId)
     );
+    console.log(allProducts);
+    console.log(order.supplierId)
 
     const totalOrder = products.reduce((acc, p) => acc + (p.subtotal || 0), 0);
     useEffect(() => {
@@ -377,7 +380,7 @@ export default function PurchaseOrderDetails() {
                                 </>
                             )
                         )}
-                        {order.status != STATUS_CANCELLED && user.role != 'supplier'&& (
+                        {order.status != STATUS_CANCELLED && user.role != 'supplier' && (
                             <button
                                 onClick={markAsDelivered}
                                 disabled={isSaving}
@@ -494,7 +497,7 @@ export default function PurchaseOrderDetails() {
                     </table>
 
                     {user?.role != "supplier" && user?.role != "picker" && (
-                         order?.status === STATUS_PENDING && (
+                        order?.status === STATUS_PENDING && (
                             <div className="flex items-center gap-4 px-4 py-4 border-t border-gray-700 bg-gray-800/50">
                                 <select
                                     value={productToAdd}
@@ -517,7 +520,7 @@ export default function PurchaseOrderDetails() {
                                     Add product
                                 </button>
                             </div>
-                        )   
+                        )
                     )}
 
                     <div className="flex justify-between items-center px-4 py-3 border-t border-gray-700 bg-gray-800/50 text-sm">
