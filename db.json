@@ -35,7 +35,7 @@
     {
       "id": "5e1a3f7b-983a-4b90-8b22-982a2e3d123",
       "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d123",
-      "name": "Organic Canadian Coffee Beans 1kg",
+      "name": "Organic Canadian Coffee Beans 500g",
       "sku": "COF-CAD-500G",
       "category": "Beverages",
       "brand": "Tim Hortons",
@@ -57,27 +57,12 @@
       "brand": "SweetBite",
       "supplierId": "c4f8d8a1-8e9a-4f52-bf77-4c3d2e1c5a21",
       "supplierName": "Thales Trade Supplies Ltd.",
-      "price": 2.99,
-      "inStock": "0",
+      "price": "3",
+      "inStock": "3",
       "location": "Calgary Storage C2",
       "expirationDate": "2025-12-20",
       "createdAt": "2024-07-01T09:00:00Z",
       "updatedAt": "2025-03-12T10:10:10Z"
-    },
-    {
-      "id": "de4b",
-      "productId": "id_1763617390879_t7crasmkiz",
-      "name": "Organic Arabica Coffee Beans 1kg",
-      "sku": "asd",
-      "category": "asd",
-      "description": "",
-      "brand": "asd",
-      "price": 1,
-      "inStock": 1,
-      "location": "1",
-      "expirationDate": "2025-11-21",
-      "supplierName": "Nelson Logistics Co.",
-      "supplierId": "b19cfd43-4f25-4bb8-8e1a-29b0dc8cb6c2"
     }
   ],
   "suppliers": [
@@ -119,14 +104,14 @@
       "updatedAt": "2025-11-20T04:24:01.392Z"
     },
     {
-      "id": "57df08bc-f7a1-4da3-a2c9-7f3419ea561c",
+      "id": "34a4221c-6ea6-4633-b7ba-dd24f56a6917",
       "name": "Shintaro Samurai",
       "email": "shintaro@powerfullgirls.com",
       "role": "manager",
       "notes": "",
       "status": "INACTIVE",
-      "createdAt": "2025-11-20T01:59:52.162Z",
-      "updatedAt": "2025-11-20T04:24:23.304Z"
+      "createdAt": "2025-11-20T17:00:52.174Z",
+      "updatedAt": "2025-11-20T17:01:23.097Z"
     }
   ],
   "purchase-orders": [
@@ -236,9 +221,19 @@
       "supplierName": "Thales Trade Supplies Ltd.",
       "deliveryDate": "2025-11-29",
       "createdAt": "2025-11-20",
-      "status": "Pending",
-      "products": [],
-      "total": 0
+      "status": "Delivered",
+      "products": [
+        {
+          "productId": "e49b94cb-7853-4b47-9b18-42a735b94f65",
+          "productSku": "CHO-DARK-100G",
+          "productName": "Dark Chocolate Bar 100g",
+          "brand": "SweetBite",
+          "quantity": 11,
+          "unitPrice": 2.99,
+          "subtotal": 32.89
+        }
+      ],
+      "total": 32.89
     },
     {
       "id": "1763613746120",
@@ -247,8 +242,19 @@
       "deliveryDate": "2025-11-28",
       "createdAt": "2025-11-20",
       "status": "Pending",
-      "products": [],
-      "total": 0
+      "products": [
+        {
+          "productId": "5e1a3f7b-983a-4b90-8b22-982a2e3d25ef",
+          "productSku": "COF-ARC-1KG",
+          "productName": "Organic Arabica Coffee Beans 1kg",
+          "brand": "ArabicaCo",
+          "quantity": 11,
+          "unitPrice": 20,
+          "subtotal": 220,
+          "inventoryPrice": 20
+        }
+      ],
+      "total": 220
     }
   ]
 }

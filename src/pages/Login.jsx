@@ -11,7 +11,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await fetch("/suppliers");
+      const res = await fetch("http://localhost:3000/suppliers");
       const data = await res.json();
       //setSuppliers(data);
 
