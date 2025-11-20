@@ -19,6 +19,7 @@ export default function ProductForm({ title, initialData, onSave }) {
     location: '',
     expirationDate: '',
     supplierName: '',
+    supplierId: ''
   };
 
   // formData holds the current state of the form inputs.
@@ -43,7 +44,16 @@ export default function ProductForm({ title, initialData, onSave }) {
   // Generic handler for all form inputs. Updates state based on input `name`.
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'supplierName') {
+      const selectedId = e.target.selectedOptions[0].getAttribute('data-id');
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+        supplierId: selectedId
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
 
     // Clear any specific error message as the user starts typing again.
     if (errors[name]) {
@@ -126,7 +136,10 @@ export default function ProductForm({ title, initialData, onSave }) {
       .then((response) => response.json())
       .then((data) => {
         setSuppliers(data);
-        console.log(data);
+
+        const match = data.filter(supplier => supplier.role === 'supplier');
+        if (match) setSuppliers(match);
+
       })
       .catch((error) => {
         console.error("Error fetching suppliers:", error);
@@ -300,10 +313,11 @@ export default function ProductForm({ title, initialData, onSave }) {
               className={`w-full bg-gray-800 border ${inputErrorClass('supplier')} rounded-lg p-3 text-white placeholder-gray-500 focus:ring-teal-500 focus:border-teal-500 shadow-inner`}
             >
               <option value="">Select a Supplier</option>
-              {
-                // Map the fetched suppliers to options in the dropdown.
-                suppliers.map(s => <option key={s.id} value={s.name}>{s.name}</option>)
-              }
+              {suppliers.map(s => (
+                <option key={s.id} value={s.name} data-id={s.id}>
+                  {s.name}
+                </option>
+              ))}
             </select>
             {errors.supplierName && <span className="text-xs text-red-500 mt-1">{errors.supplierName}</span>}
           </div>

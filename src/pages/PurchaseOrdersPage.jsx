@@ -1,8 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import { UserContext } from "../UserContext";
 
 export default function PurchaseOrders() {
+  const { user } = useContext(UserContext);
   const [orders, setPurchaseOrders] = useState([]);
+  const [supplierOrders, setSupplierOrders] = useState([]);
+
+    useEffect(() => {
+      if(user.role === 'supplier'){
+        const filtered = orders.filter(p => p.supplierId === user.supplierId);
+        setSupplierOrders(filtered);
+      } else {
+        setSupplierOrders(orders);
+      }
+    }, [orders, user.supplierId]);
+
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -20,7 +33,7 @@ export default function PurchaseOrders() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
 
-  const filteredOrders = orders.filter((order) => {
+  const filteredOrders = supplierOrders.filter((order) => {
 
     const matchesSearch = String(order.id)
       .toLowerCase()
@@ -39,7 +52,7 @@ export default function PurchaseOrders() {
     const colors = {
       Pending: "bg-yellow-500",
       Approved: "bg-blue-500",
-      Transit: "bg-aqua-500", 
+      Transit: "bg-aqua-500",
       Delivered: "bg-green-500",
       Cancelled: "bg-red-500"
     };
@@ -75,8 +88,8 @@ export default function PurchaseOrders() {
           Purchase Orders
         </h1>
 
-        <div className="flex items-center mb-8"> 
-          <div className="flex gap-4"> 
+        <div className="flex items-center mb-8">
+          <div className="flex gap-4">
 
             <input
               type="text"
@@ -99,14 +112,15 @@ export default function PurchaseOrders() {
               <option value="ordered">Ordered</option>
               <option value="delivered">Delivered</option>
             </select>
-          
-            <Link
-              to="/purchase-order/add"
-              className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold
+            {user?.role != "supplier" && user?.role != "picker" &&(
+              <Link
+                to="/purchase-order/add"
+                className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold
                          hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50 transform hover:scale-[1.01]"
-            >
-              Create Purchase Order +
-            </Link>
+              >
+                Create Purchase Order +
+              </Link>
+            )}
           </div>
 
         </div>
@@ -177,7 +191,7 @@ export default function PurchaseOrders() {
                           to={`/purchase-order/${order.id}`}
                           className="text-gray-400 hover:text-blue-400 transition-colors"
                         >
-                          <ViewIcon className="search-icon" style={{ width: '20px', height: '20px' }}/>
+                          <ViewIcon className="search-icon" style={{ width: '20px', height: '20px' }} />
                         </Link>
                       </div>
                     </td>

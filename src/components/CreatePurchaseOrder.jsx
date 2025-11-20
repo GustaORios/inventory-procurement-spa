@@ -14,7 +14,7 @@ export default function CreatePurchaseOrder({ title = "Create New Purchase Order
   };
 
   const [formData, setFormData] = useState(defaultState);
-  
+
   useEffect(() => {
     if (didFetch.current) return;
     didFetch.current = true;
@@ -23,6 +23,11 @@ export default function CreatePurchaseOrder({ title = "Create New Purchase Order
       .then((response) => response.json())
       .then((data) => {
         setSuppliers(data);
+
+        const onlySuppliers = data.filter(supplier => supplier.role === "supplier");
+
+        setSuppliers(onlySuppliers);
+
       })
       .catch((error) => {
         console.error("Error fetching suppliers:", error);
@@ -42,7 +47,7 @@ export default function CreatePurchaseOrder({ title = "Create New Purchase Order
         newFormData.supplierName = '';
       }
     }
-    
+
     setFormData(newFormData);
 
     if (errors[name]) {
@@ -58,7 +63,7 @@ export default function CreatePurchaseOrder({ title = "Create New Purchase Order
 
     const today = new Date().toISOString().split('T')[0];
     if (formData.deliveryDate.trim() && formData.deliveryDate < today) {
-        newErrors.deliveryDate = "Delivery date cannot be in the past."; 
+      newErrors.deliveryDate = "Delivery date cannot be in the past.";
     }
 
     setErrors(newErrors);
@@ -66,7 +71,7 @@ export default function CreatePurchaseOrder({ title = "Create New Purchase Order
   };
 
   function generateUniqueId() {
-    return Date.now().toString(); 
+    return Date.now().toString();
   }
 
   const handleSubmit = async (e) => {
@@ -75,24 +80,23 @@ export default function CreatePurchaseOrder({ title = "Create New Purchase Order
       console.error("Validation failed", errors);
       return;
     }
-    
+
     const finalData = {
-        supplierId: formData.supplierId,
-        supplierName: formData.supplierName,
-        deliveryDate: formData.deliveryDate,
-        
-        id: generateUniqueId(),
-        createdAt: new Date().toISOString().split('T')[0],
-        status: 'Pending', 
-        products: [],
-        total: 0,
+      supplierId: formData.supplierId,
+      supplierName: formData.supplierName,
+      deliveryDate: formData.deliveryDate,
+
+      id: generateUniqueId(),
+      createdAt: new Date().toISOString().split('T')[0],
+      status: 'Pending',
+      products: [],
+      total: 0,
     };
-    
+
     await fetch('http://localhost:3000/purchase-orders', { method: 'POST', body: JSON.stringify(finalData) });
-    
-    navigate(`/purchase-order/${finalData.id}`); 
+    navigate(`/purchase-order/${finalData.id}`);
   };
-  
+
   const inputErrorClass = (fieldName) =>
     errors[fieldName] ? 'border-red-500' : 'border-gray-700';
 
@@ -131,9 +135,9 @@ export default function CreatePurchaseOrder({ title = "Create New Purchase Order
               <option value="">Select a Supplier</option>
               {
                 suppliers.map(s => (
-                    <option key={s.id} value={s.id}>
-                        {s.name}
-                    </option>
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
                 ))
               }
             </select>
