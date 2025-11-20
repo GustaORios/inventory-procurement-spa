@@ -503,7 +503,6 @@ export default function PurchaseOrderDetails() {
                                 >
                                     <option value="">Select a product to add</option>
                                     {availableProducts
-                                        .filter(invProduct => invProduct.inStock > 0)
                                         .map(invProduct => (
                                             <option key={invProduct.productId} value={invProduct.productId}>
                                                 {invProduct.name} ({invProduct.sku})

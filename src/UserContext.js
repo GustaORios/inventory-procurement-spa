@@ -16,8 +16,9 @@ export function UserProvider({ children }) {
         setLoading(false);
     }, []);
 
-    const login = (username, role) => {
-        const userData = { username, role };
+    const login = (username, role, supplierId) => {
+        const userData = { username, role, supplierId };
+
         localStorage.setItem("user", JSON.stringify(userData));
         setUser(userData);
         navigate("/purchase-orders");

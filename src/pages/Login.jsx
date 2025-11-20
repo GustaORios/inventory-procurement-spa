@@ -1,18 +1,30 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../UserContext";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  //const [suppliers, setSuppliers] = useState([]);
   const { login } = useContext(UserContext);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log(password)
-    if (password === 'picker' || password === 'manager' || password === 'admin' || password === 'supplier') {
-      login(username.toLowerCase(), password.toLowerCase());
-    } else {
-      alert("Invalid credentials");
+
+    try {
+      const res = await fetch("/suppliers");
+      const data = await res.json();
+      //setSuppliers(data);
+
+      const match = data.find(supplier => supplier.email === username);
+      const matchedSupplierId = match?.id || "";
+      if (["picker", "manager", "admin", "supplier"].includes(password.toLowerCase())) {
+        login(username.toLowerCase(), password.toLowerCase(), matchedSupplierId);
+      } else {
+        alert("Invalid credentials");
+      }
+    } catch (err) {
+      console.error("Login failed:", err);
+      alert("Error during login");
     }
   };
 

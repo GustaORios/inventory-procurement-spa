@@ -5,6 +5,17 @@ import { UserContext } from "../UserContext";
 export default function PurchaseOrders() {
   const { user } = useContext(UserContext);
   const [orders, setPurchaseOrders] = useState([]);
+  const [supplierOrders, setSupplierOrders] = useState([]);
+
+    useEffect(() => {
+      if(user.role === 'supplier'){
+        const filtered = orders.filter(p => p.supplierId === user.supplierId);
+        setSupplierOrders(filtered);
+      } else {
+        setSupplierOrders(orders);
+      }
+    }, [orders, user.supplierId]);
+
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -22,7 +33,7 @@ export default function PurchaseOrders() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
 
-  const filteredOrders = orders.filter((order) => {
+  const filteredOrders = supplierOrders.filter((order) => {
 
     const matchesSearch = String(order.id)
       .toLowerCase()

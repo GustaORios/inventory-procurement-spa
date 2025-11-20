@@ -23,6 +23,11 @@ export default function CreatePurchaseOrder({ title = "Create New Purchase Order
       .then((response) => response.json())
       .then((data) => {
         setSuppliers(data);
+
+        const onlySuppliers = data.filter(supplier => supplier.role === "supplier");
+
+        setSuppliers(onlySuppliers);
+
       })
       .catch((error) => {
         console.error("Error fetching suppliers:", error);
