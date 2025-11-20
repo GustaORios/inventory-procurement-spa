@@ -23,7 +23,7 @@ export default function App() {
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const res = await fetch("/products");
+        const res = await fetch("http://localhost:3000/products");
         if (!res.ok) throw new Error("Theres no producst to show");
         const data = await res.json();
         setProducts(data);
@@ -43,7 +43,7 @@ export default function App() {
         productId: newProduct.productId || newProduct.sku || crypto.randomUUID?.() || String(Date.now()),
       };
 
-      const res = await fetch("/products", {
+      const res = await fetch("http://localhost:3000/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(productToSave),
@@ -63,7 +63,7 @@ export default function App() {
 
   const handleEditProduct = async (updatedProduct) => {
     try {
-      const res = await fetch(`/products/${updatedProduct.id}`, {
+      const res = await fetch(`http://localhost:3000/products/${updatedProduct.id}`, {
         method: "PUT",      // o PATCH
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedProduct),
@@ -87,7 +87,7 @@ export default function App() {
 
   const handleAddSupplier = async (newSupplier) => {
     try {
-      const res = await fetch("/suppliers", {
+      const res = await fetch("http://localhost:3000/suppliers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newSupplier)
@@ -107,7 +107,7 @@ export default function App() {
 
   const handleDeleteProduct = async (idToDelete) => {
     try {
-      const res = await fetch(`/products/${idToDelete}`, {
+      const res = await fetch(`http://localhost:3000/products/${idToDelete}`, {
         method: "DELETE",
       });
 
@@ -127,7 +127,7 @@ export default function App() {
   ///////////////////////////////////////prueba
   const handleUpdateSupplier = async (updatedSupplier) => {
     try {
-      const res = await fetch(`/suppliers/${updatedSupplier.id}`, {
+      const res = await fetch(`http://localhost:3000/suppliers/${updatedSupplier.id}`, {
         method: "PUT", // o PATCH, según tu json-server
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedSupplier),
@@ -149,7 +149,7 @@ export default function App() {
   useEffect(() => {
     const loadSuppliers = async () => {
       try {
-        const res = await fetch("/suppliers");
+        const res = await fetch("http://localhost:3000/suppliers");
         const data = await res.json();
         setSuppliers(data);
       } catch (err) {

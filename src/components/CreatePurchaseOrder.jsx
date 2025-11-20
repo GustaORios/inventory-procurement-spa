@@ -19,7 +19,7 @@ export default function CreatePurchaseOrder({ title = "Create New Purchase Order
     if (didFetch.current) return;
     didFetch.current = true;
 
-    fetch('/suppliers')
+    fetch('http://localhost:3000/suppliers')
       .then((response) => response.json())
       .then((data) => {
         setSuppliers(data);

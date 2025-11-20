@@ -136,7 +136,7 @@ async function updateProductStock(order) {
     }
 
     for (const item of order.products) {
-        const productData = await fetch(`/products/${item.productId}`).then(res => res.json()).catch(() => null);
+        const productData = await fetch(`http://localhost:3000/products/${item.productId}`).then(res => res.json()).catch(() => null);
 
         if (!productData) {
             console.error(`Product not found for ID: ${item.productId}`);
@@ -147,7 +147,7 @@ async function updateProductStock(order) {
         const newStock = currentStock + item.quantity;
 
         try {
-            const res = await fetch(`/products/${item.productId}`, {
+            const res = await fetch(`http://localhost:3000/products/${item.productId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -188,8 +188,8 @@ export default function PurchaseOrderDetails() {
     useEffect(() => {
         const loadInitialData = async () => {
             try {
-                const ordersData = await fetch("/purchase-orders").then(res => res.json());
-                const inventory = await fetch("/products").then(res => res.json());
+                const ordersData = await fetch("http://localhost:3000/purchase-orders").then(res => res.json());
+                const inventory = await fetch("http://localhost:3000/products").then(res => res.json());
 
                 setAllProducts(inventory);
 
@@ -261,7 +261,7 @@ export default function PurchaseOrderDetails() {
         };
 
         try {
-            const res = await fetch(`/purchase-orders/${orderId}`, {
+            const res = await fetch(`http://localhost:3000/purchase-orders/${orderId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

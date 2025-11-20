@@ -18,7 +18,7 @@ export default function SuppliersPage() {
     if (didFetch.current) return;
     didFetch.current = true;
 
-    fetch('/suppliers')
+    fetch('http://localhost:3000/suppliers')
       .then((response) => response.json())
       .then((data) => {
         setSuppliers(data);
@@ -82,7 +82,7 @@ export default function SuppliersPage() {
 
   async function handleDeleteSupplier(id) {
     try {
-      const res = await fetch(`/suppliers/${id}`, { method: "DELETE" });
+      const res = await fetch(`http://localhost:3000/suppliers/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Delete not completed");
 
       setSuppliers(prev => prev.filter(s => s.id !== id));

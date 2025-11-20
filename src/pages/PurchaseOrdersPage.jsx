@@ -20,7 +20,7 @@ export default function PurchaseOrders() {
   useEffect(() => {
     const loadOrders = async () => {
       try {
-        const res = await fetch("/purchase-orders");
+        const res = await fetch("http://localhost:3000/purchase-orders");
         const data = await res.json();
         setPurchaseOrders(data);
       } catch (err) {
