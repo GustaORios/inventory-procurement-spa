@@ -1,5 +1,10 @@
 #  Scrum Summary
 
+Roles
+- Gustavo – Scrum Master / Developer
+- Nelson – Product Owner / Developer
+- Thales – Designer / Developer
+
 ## 1. Overview
 
 This document summarizes the Scrum process, product backlog, user
@@ -55,6 +60,7 @@ stories, and sprint reports for the project.
 ------------------------------------------------------------------------
 
 ## 3. User Stories Breakdown
+## 6.1 Trello
 ### https://trello.com/b/GtcULdx1/final-project
 
 ## 4. Sprint Reports
