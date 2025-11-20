@@ -69,11 +69,17 @@ The system streamlines workflows like:
 
 ---
 
-## 📦 Project Repository
+## 📦 Project references
 
 The complete frontend project is available at:
 
 [https://github.com/GustaORios/inventory-procurement-spa](https://github.com/GustaORios/inventory-procurement-spa)
+
+## Trello ( SCRUM )
+### https://trello.com/b/GtcULdx1/final-project
+
+## Figma
+### https://www.figma.com/design/Q8A98Tgxk8MdkHUI3OwMer/Untitled?node-id=0-1&p=f&t=aLHkcdaQ7HOwRdMw-0
 
 > The backend team will create a separate repository for the API.
 
