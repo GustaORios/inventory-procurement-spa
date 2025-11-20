@@ -160,7 +160,7 @@ export default function App() {
     loadSuppliers();
   }, []);
 
-  // Função para ENCONTRAR um produto pelo SKU (necessário para a tela de edição
+
   const getProductBySku = (productId) => {
     return products.find(p => p.productId === productId);
   };
@@ -178,33 +178,20 @@ export default function App() {
         }
       >
 
-        {/*
-        <Route path="dashboard" element={
-          <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
-            <Dashboard />
-          </RoleProtectedRoute >
-        }
-        />*/}
-
-
         <Route
           path="inventory"
           index
           element={
-            <RoleProtectedRoute allowedRoles={["picker", "manager", "admin"]}>
-              <Inventory
-                products={products}
-                handleDeleteProduct={handleDeleteProduct}
-              />
+            <RoleProtectedRoute allowedRoles={["manager", "picker", "admin"]}>
+              <Inventory products={products} handleDeleteProduct={handleDeleteProduct} />
             </RoleProtectedRoute>
-
           }
         />
 
         <Route
           path="inventory/add"
           element={
-            <RoleProtectedRoute allowedRoles={["picker", "admin"]}>
+            <RoleProtectedRoute allowedRoles={["manager", "picker", "admin"]}>
               <AddProduct onAdd={handleAddProduct} />
             </RoleProtectedRoute>
           }
@@ -213,20 +200,21 @@ export default function App() {
         <Route
           path="inventory/edit/:productId"
           element={
-            <RoleProtectedRoute allowedRoles={["picker", "admin"]}>
-              <EditProduct
-                onEdit={handleEditProduct}
-                getProduct={getProductBySku}
-              />
+            <RoleProtectedRoute allowedRoles={["manager", "picker", "admin"]}>
+              <EditProduct onEdit={handleEditProduct} getProduct={getProductBySku} />
             </RoleProtectedRoute>
           }
         />
 
-        <Route path="suppliers" element={
-          <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
-            <Suppliers />
-          </RoleProtectedRoute>
-        } />
+
+        <Route
+          path="suppliers"
+          element={
+            <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
+              <Suppliers />
+            </RoleProtectedRoute>
+          }
+        />
 
         <Route
           path="suppliers/add"
@@ -235,43 +223,48 @@ export default function App() {
               <AddSupplier onAdd={handleAddSupplier} />
             </RoleProtectedRoute>
           }
-
         />
 
         <Route
-          path="/suppliers/edit/:id"
+          path="suppliers/edit/:id"
           element={
             <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
-              <EditSupplier
-                suppliers={suppliers}
-                onUpdate={handleUpdateSupplier}
-              />
+              <EditSupplier suppliers={suppliers} onUpdate={handleUpdateSupplier} />
+            </RoleProtectedRoute>
+          }
+        />
+
+        <Route
+          path="purchase-orders"
+          element={
+            <RoleProtectedRoute allowedRoles={["manager", "supplier", "admin", "picker"]}>
+              <PurchaseOrders />
+            </RoleProtectedRoute>
+          }
+        />
+
+        <Route
+          path="purchase-order/:orderId"
+          element={
+            <RoleProtectedRoute allowedRoles={["manager", "supplier", "admin", "picker"]}>
+              <PurchaseOrdersDetail />
+            </RoleProtectedRoute>
+          }
+        />
+
+        <Route
+          path="purchase-order/add"
+          element={
+            <RoleProtectedRoute allowedRoles={["manager", "admin"]}>
+              <CreatePurchaseOrder />
             </RoleProtectedRoute>
           }
         />
 
         <Route path="settings" element={<Settings />} />
-
-        <Route path="purchase-orders" element={
-          <ProtectedRoute allowedRoles={["admin", "manager", "supplier"]}>
-            <PurchaseOrders/>
-          </ProtectedRoute>
-        } />
-
-        <Route path="purchase-order/:orderId" element={
-          <ProtectedRoute allowedRoles={["admin", "manager", "supplier"]}>
-            <PurchaseOrdersDetail/>
-          </ProtectedRoute>
-        } />
-
-        <Route path="purchase-order/add" element={
-          <ProtectedRoute allowedRoles={["admin", "manager", "supplier"]}>
-            <CreatePurchaseOrder/>
-          </ProtectedRoute>
-        } />
-
         <Route path="*" element={<div>404 - Not found</div>} />
       </Route>
     </Routes>
+
   );
 }

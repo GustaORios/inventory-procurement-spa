@@ -233,7 +233,7 @@ export default function Inventory({ products, handleDeleteProduct }) {
 
             <div className="flex justify-between items-center mb-8">
 
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-center">
                     <input
                         type="text"
                         placeholder="Search Product Name..."
@@ -252,16 +252,17 @@ export default function Inventory({ products, handleDeleteProduct }) {
                         <option value="alert">ALERT</option>
                         <option value="critical">CRITICAL</option>
                     </select>
+
+                    {user?.role != "supplier" && user?.role != "manager" && (
+                        <Link
+                            to="/inventory/add"
+                            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50 transform hover:scale-[1.01]"
+                        >
+                            Add New Product +
+                        </Link>
+                    )}
                 </div>
 
-                {user?.role != "supplier" && user?.role != "manager" && (
-                    <Link
-                        to="/inventory/add"
-                        className="flex items-center gap-2 px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-500 transition-colors shadow-lg shadow-teal-700/50 transform hover:scale-[1.01]"
-                    >
-                        Add New Product +
-                    </Link>
-                )}
             </div>
 
             <InventoryTable

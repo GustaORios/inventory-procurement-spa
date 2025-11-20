@@ -15,7 +15,8 @@ export default function ProductForm({ title, initialData, onSave }) {
     inStock: '',
     location: '',
     expirationDate: '',
-    supplierName: '', 
+    supplierName: '',
+    supplierId: ''
   };
 
   const [formData, setFormData] = useState(initialData || defaultState);
@@ -33,7 +34,16 @@ export default function ProductForm({ title, initialData, onSave }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'supplierName') {
+      const selectedId = e.target.selectedOptions[0].getAttribute('data-id');
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+        supplierId: selectedId
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
 
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: null }));
@@ -69,7 +79,7 @@ export default function ProductForm({ title, initialData, onSave }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      if(!formData.productId) formData.productId = generateId();
+      if (!formData.productId) formData.productId = generateId();
       onSave(formData);
       const action = initialData ? 'updated' : 'created';
       console.log(`Product ${action} successfully:`, formData);
@@ -98,7 +108,10 @@ export default function ProductForm({ title, initialData, onSave }) {
       .then((response) => response.json())
       .then((data) => {
         setSuppliers(data);
-        console.log(data);
+
+        const match = data.filter(supplier => supplier.role === 'supplier');
+        if (match) setSuppliers(match);
+
       })
       .catch((error) => {
         console.error("Error fetching suppliers:", error);
@@ -263,7 +276,7 @@ export default function ProductForm({ title, initialData, onSave }) {
             />
           </div>
 
-          
+
           <div>
             <label htmlFor="supplierName" className="block text-sm font-medium text-gray-300 mb-1">
               Supplier
@@ -276,9 +289,11 @@ export default function ProductForm({ title, initialData, onSave }) {
               className={`w-full bg-gray-800 border ${inputErrorClass('supplier')} rounded-lg p-3 text-white placeholder-gray-500 focus:ring-teal-500 focus:border-teal-500 shadow-inner`}
             >
               <option value="">Select a Supplier</option>
-              {
-                suppliers.map(s => <option key={s.id} value={s.name}>{s.name}</option>)
-              }
+              {suppliers.map(s => (
+                <option key={s.id} value={s.name} data-id={s.id}>
+                  {s.name}
+                </option>
+              ))}
             </select>
             {errors.supplierName && <span className="text-xs text-red-500 mt-1">{errors.supplierName}</span>}
           </div>

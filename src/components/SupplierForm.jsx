@@ -183,7 +183,7 @@ export default function SupplierForm({ title, initialData, onSave }) {
                 <option value="picker" className="bg-gray-900">Picker</option>
                 <option value="packer" className="bg-gray-900">Packer</option>
                 <option value="manager" className="bg-gray-900">Manager</option>
-                <option value="vendor" className="bg-gray-900">Vendor</option>
+                <option value="supplier" className="bg-gray-900">Supplier</option>
               </select>
             </div>
 
